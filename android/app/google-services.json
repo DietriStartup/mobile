@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "962761381504",
+    "project_id": "dietri-3c59b",
+    "storage_bucket": "dietri-3c59b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:962761381504:android:9b6fd3996ee0abeeeb7865",
+        "android_client_info": {
+          "package_name": "com.example.dietri"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "962761381504-5h2qsbcppl26q1kl2cuhqnbb21ietut5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDht5tKnTm7z4Slso7G0TMSPGv67qpgLMc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "962761381504-5h2qsbcppl26q1kl2cuhqnbb21ietut5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
