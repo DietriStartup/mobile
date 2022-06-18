@@ -7,3 +7,4 @@ const Color primaryAccentColor = Color(0xffFAD427);
 const Color lightBlack = Colors.black45;
 const Color black = Colors.black87;
 const Color whiteColor = Colors.white;
+const Color greyColor = Color(0xffD9D9D9);
