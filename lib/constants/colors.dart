@@ -6,4 +6,3 @@ const Color kLightBlack = Colors.black45;
 const Color kBlack = Colors.black87;
 const Color kWhiteColor = Colors.white;
 const Color kGreyColor = Color(0xffD9D9D9);
-const Color kInputTextColor = Color(0xff7c7c7c);

@@ -2,7 +2,6 @@ import 'package:dietri/constants/colors.dart';
 import 'package:dietri/constants/fonts.dart';
 import 'package:dietri/constants/onboarding_screen_texts.dart';
 import 'package:dietri/screens/onboarding/onboarding_screen_data.dart';
-import 'package:dietri/signup.dart';
 import 'package:flutter/material.dart';
 
 class OnboardingScreens extends StatefulWidget {
@@ -107,7 +106,6 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                   child: TextButton(
                       onPressed: () {
                         //TODO: PUSH TO SIGNUP SCREEN
-                        Navigator.of(context).pushNamed('signUp');
                       },
                       child: Text(
                         'Let\'s Go!',
