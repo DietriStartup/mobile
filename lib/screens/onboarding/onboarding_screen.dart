@@ -28,7 +28,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
       height: 25.0,
       width: width,
       decoration: BoxDecoration(
-        color: primaryAccentColor,
+        color: kPrimaryAccentColor,
         borderRadius: BorderRadius.circular(50.0),
       ),
     );
@@ -39,7 +39,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: whiteColor,
+      backgroundColor: kWhiteColor,
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -81,7 +81,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                     height: 30,
                     width: width,
                     decoration: const BoxDecoration(
-                        color: greyColor,
+                        color: kGreyColor,
                         borderRadius: BorderRadius.all(Radius.circular(50))),
                   ),
                 ),
@@ -110,7 +110,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                       child: Text(
                         'Let\'s Go!',
                         style: Fonts.montserratFont(
-                            color: black,
+                            color: kBlack,
                             size: 16,
                             fontWeight: FontWeight.w400),
                       )),
@@ -131,7 +131,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                       child: Text(
                         'Skip',
                         style: Fonts.montserratFont(
-                            color: black,
+                            color: kBlack,
                             size: 16,
                             fontWeight: FontWeight.w400),
                       ),
@@ -149,7 +149,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                       child: Text(
                         'Next',
                         style: Fonts.montserratFont(
-                            color: black,
+                            color: kBlack,
                             size: 16,
                             fontWeight: FontWeight.w400),
                       ),
