@@ -1,4 +1,5 @@
 import 'package:dietri/constants/colors.dart';
+import 'package:dietri/constants/fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../helper/sizer.dart';

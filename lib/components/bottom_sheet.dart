@@ -39,7 +39,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
         padding: EdgeInsets.only(
           top: widget.paddingTop,
           left: sizer(true, 39.0, context),
-          bottom:  sizer(true, 10.0, context),
+          bottom:  sizer(true, 31.0, context),
           right: sizer(true, 39.0, context),
         ),
         decoration:  BoxDecoration(
@@ -49,6 +49,9 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
             topRight: Radius.circular(24),
           ),
         ),
-        child: Column(children: widget.content));
+        child: SingleChildScrollView(
+          child: Column(
+            children: widget.content
+            )));
   }
 }

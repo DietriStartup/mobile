@@ -8,6 +8,8 @@ class FullButton extends StatefulWidget {
   final Function? buttonFunction;
   final String? buttonText;
   final bool isIcon;
+  final double height;
+  final double width;
   final bool isTextSmall;
   final String? iconAsset;
   final Color? buttonOnlineColor, onlineTextColor;
@@ -20,7 +22,9 @@ class FullButton extends StatefulWidget {
       this.onlineTextColor,
       this.isIcon = false,
       this.isTextSmall = false,
-      this.iconAsset})
+      this.iconAsset, 
+      required this.height, 
+      required this.width})
       : super(key: key);
 
   @override
@@ -54,7 +58,8 @@ class _FullButtonState extends State<FullButton> {
                   : () {
                     },
           child: Container(
-            height: sizer(false, 40, context),
+            height: widget.height,
+            width: widget.width,
             padding: const EdgeInsets.symmetric(vertical: 6.6),
             margin: const EdgeInsets.symmetric(vertical: 0.0),
             decoration: BoxDecoration(
@@ -64,10 +69,10 @@ class _FullButtonState extends State<FullButton> {
             child:  Center(
                     child: Text(widget.buttonText ?? '',
                         style: TextStyle(
-                            color: (widget.onlineTextColor ?? Colors.white),
+                            color: (widget.onlineTextColor ?? kBlack),
                             fontSize: widget.isTextSmall
-                                ? sizer(true, 11.5, context)
-                                : sizer(true, 13, context),
+                                ? sizer(true, 15.0, context)
+                                : sizer(true, 20, context),
                             fontWeight: FontWeight.w700))),
           ),
         ));
