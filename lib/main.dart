@@ -1,5 +1,4 @@
 import 'package:dietri/screens/onboarding/onboarding_screen.dart';
-import 'package:dietri/helper/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
@@ -21,12 +20,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      onGenerateRoute: Routes.generateRoute,
-      debugShowCheckedModeBanner: false,
+<<<<<<< Updated upstream
+      theme: ThemeData(
         theme: ThemeData.dark().copyWith(
+          scaffoldBackgroundColor: Colors.red,
+          home: Signup(),
         ),
-        home: OnboardingScreens(),
-      
+=======
+      darkTheme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: Colors.red,
+>>>>>>> Stashed changes
+      ),
     );
   }
 }
