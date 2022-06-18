@@ -97,11 +97,12 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
       ),
       bottomSheet: Container(
         color: Colors.white,
+        height: 50,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: _currentPage == 2
-              ? Padding(
-                  padding: const EdgeInsets.only(left: 120),
+              ? Align(
+                  alignment: Alignment.bottomCenter,
                   child: TextButton(
                       onPressed: () {
                         //TODO: PUSH TO SIGNUP SCREEN
