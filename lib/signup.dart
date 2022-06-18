@@ -1,3 +1,5 @@
+import 'package:dietri/constants/colors.dart';
+import 'package:dietri/helper/sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'components/bottom_sheet.dart';
@@ -5,7 +7,6 @@ import 'components/button.dart';
 import 'components/input_field.dart';
 import 'constants/fonts.dart';
 import 'helper/regex.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class Signup extends StatefulWidget {
   @override
@@ -13,6 +14,7 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
+//  bool _showPassword = false;
 
   static final _formKey = new GlobalKey<FormState>();
   FocusNode focusNode = FocusNode();
@@ -25,6 +27,7 @@ class _SignupState extends State<Signup> {
 
   @override
   Widget build(BuildContext context) {
+
     var width = MediaQuery.of(context).size.width;
     // print(MediaQuery.of(context).size.height - 606);
     return SafeArea(
@@ -212,10 +215,9 @@ class _SignupState extends State<Signup> {
                 ),
               ],
             ),
->>>>>>> ft/create/component
           ),
-        ),
-      ),
+        )
+      )
     );
   }
 }
