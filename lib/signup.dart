@@ -163,7 +163,7 @@ class _SignupState extends State<Signup> {
                           width: MediaQuery.of(context).size.width,
                           buttonText: 'Sign Up',
                           buttonFunction: () {
-                            Navigator.of(context).pushNamed('signIn');
+                           // Navigator.of(context).pushNamed('signIn');
                           },
                         ),
                         SizedBox(
