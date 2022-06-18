@@ -107,7 +107,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                   child: TextButton(
                       onPressed: () {
                         //TODO: PUSH TO SIGNUP SCREEN
-                        Navigator.of(context).pushNamed('signUp');
+                        Navigator.of(context).pushNamed('signIn');
                       },
                       child: Text(
                         'Let\'s Go!',
