@@ -51,9 +51,7 @@ class _SigninScreenState extends State<SigninScreen> {
               children: <Widget>[
                 Column(
                   children: [
-                    SizedBox(
-                      height: 40.0,
-                    ),
+                    const SizedBox(height: 40.0,),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [Image.asset('assets/images/dietriLogo.png')])
@@ -146,7 +144,7 @@ class _SigninScreenState extends State<SigninScreen> {
                             //Navigator.of(context).pushNamed('signIn');
                           },
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 14.5,
                         ),
                         Container(
@@ -159,7 +157,25 @@ class _SigninScreenState extends State<SigninScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
+                          height: 14.5,
+                        ),
+                        Center(
+                          child: Text(
+                            'Biometric',
+                            style: TextStyle(
+                                color: kBlack,
+                                fontSize: sizer(true, 15.0, context), fontWeight: FontWeight.w400),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 13.0,
+                        ),
+                        const Divider(
+                  color: Colors.black,
+                  thickness: 1.0,
+                ),
+                        const SizedBox(
                           height: 13.0,
                         ),
                         Center(
