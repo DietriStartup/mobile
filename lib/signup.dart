@@ -1,5 +1,6 @@
 import 'package:dietri/constants/colors.dart';
 import 'package:dietri/helper/sizer.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'components/bottom_sheet.dart';
@@ -37,7 +38,7 @@ class _SignupState extends State<Signup> {
           }
         },
         child: Container(
-          decoration:const BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
                 image: AssetImage(
                   'assets/images/dietriBack.png',
@@ -48,13 +49,15 @@ class _SignupState extends State<Signup> {
             backgroundColor: Colors.transparent,
             body: Stack(
               children: <Widget>[
-
                 Column(
                   children: [
-                    SizedBox(height: 40.0,),
+                    SizedBox(
+                      height: 40.0,
+                    ),
                     Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children:[ Image.asset('assets/images/dietriLogo.png')])],
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [Image.asset('assets/images/dietriLogo.png')])
+                  ],
                 ),
                 Align(
                   alignment: Alignment.bottomCenter,
@@ -194,7 +197,7 @@ class _SignupState extends State<Signup> {
                           height: sizer(false, 23, context),
                         ),
                         RichText(
-                            text: const TextSpan(
+                            text: TextSpan(
                                 style: TextStyle(color: kBlack),
                                 children: [
                               TextSpan(
@@ -207,7 +210,12 @@ class _SignupState extends State<Signup> {
                                     decoration: TextDecoration.underline,
                                     decorationThickness: 2,
                                     decorationColor: Colors.black,
-                                  ))
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      Navigator.of(context)
+                                          .pushReplacementNamed('signIn');
+                                    })
                             ]))
                       ]),
                 ),

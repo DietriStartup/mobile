@@ -5,6 +5,7 @@ import 'package:dietri/constants/colors.dart';
 import 'package:dietri/constants/fonts.dart';
 import 'package:dietri/helper/regex.dart';
 import 'package:dietri/helper/sizer.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -37,7 +38,7 @@ class _SigninScreenState extends State<SigninScreen> {
           }
         },
         child: Container(
-          decoration:const BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
                 image: AssetImage(
                   'assets/images/dietriBack.png',
@@ -48,13 +49,15 @@ class _SigninScreenState extends State<SigninScreen> {
             backgroundColor: Colors.transparent,
             body: Stack(
               children: <Widget>[
-
                 Column(
                   children: [
-                    SizedBox(height: 40.0,),
+                    SizedBox(
+                      height: 40.0,
+                    ),
                     Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children:[ Image.asset('assets/images/dietriLogo.png')])],
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [Image.asset('assets/images/dietriLogo.png')])
+                  ],
                 ),
                 Align(
                   alignment: Alignment.bottomCenter,
@@ -63,7 +66,6 @@ class _SigninScreenState extends State<SigninScreen> {
                       offset: sizer(true, 250.0, context),
                       color: kWhiteColor,
                       content: [
-                        
                         GeneralTextField(
                           hintText: 'Email',
                           key: _formKey,
@@ -104,22 +106,25 @@ class _SigninScreenState extends State<SigninScreen> {
                             ),
                           ),
                         ),
-                        
+
                         SizedBox(
                           height: sizer(false, 30.0, context),
                         ),
-                        const Text('Forgot Password?', style: TextStyle(
-                                          fontSize: 15.0,
-                                          color: kBlack,
-                                          decoration: TextDecoration.underline,
-                                          decorationThickness: 1.5,
-                                          decorationColor: kBlack,
-                                        ),),
+                        const Text(
+                          'Forgot Password?',
+                          style: TextStyle(
+                            fontSize: 15.0,
+                            color: kBlack,
+                            decoration: TextDecoration.underline,
+                            decorationThickness: 1.5,
+                            decorationColor: kBlack,
+                          ),
+                        ),
                         // Row(
                         //     mainAxisAlignment: MainAxisAlignment.start,
                         //     children: [
                         //       RichText(
-                        //           text: 
+                        //           text:
                         //             TextSpan(
                         //                 text: 'Forgot Password?',
                         //                 style: TextStyle(
@@ -128,7 +133,7 @@ class _SigninScreenState extends State<SigninScreen> {
                         //                   decorationThickness: 1.5,
                         //                   decorationColor: kBlack,
                         //                 )),)
-                                  
+
                         //     ]),
                         SizedBox(
                           height: sizer(false, 30, context),
@@ -138,7 +143,7 @@ class _SigninScreenState extends State<SigninScreen> {
                           width: MediaQuery.of(context).size.width,
                           buttonText: 'Sign In',
                           buttonFunction: () {
-                            Navigator.of(context).pushNamed('signIn');
+                            //Navigator.of(context).pushNamed('signIn');
                           },
                         ),
                         SizedBox(
@@ -182,7 +187,7 @@ class _SigninScreenState extends State<SigninScreen> {
                           height: sizer(false, 23, context),
                         ),
                         RichText(
-                            text: const TextSpan(
+                            text: TextSpan(
                                 style: TextStyle(color: kBlack),
                                 children: [
                               TextSpan(
@@ -195,7 +200,12 @@ class _SigninScreenState extends State<SigninScreen> {
                                     decoration: TextDecoration.underline,
                                     decorationThickness: 2,
                                     decorationColor: Colors.black,
-                                  ))
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      Navigator.of(context)
+                                          .pushReplacementNamed('signUp');
+                                    })
                             ]))
                       ]),
                 ),
