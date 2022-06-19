@@ -1,22 +1,21 @@
+import 'package:dietri/components/bottom_sheet.dart';
+import 'package:dietri/components/button.dart';
+import 'package:dietri/components/input_field.dart';
 import 'package:dietri/constants/colors.dart';
+import 'package:dietri/constants/fonts.dart';
+import 'package:dietri/helper/regex.dart';
 import 'package:dietri/helper/sizer.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'components/bottom_sheet.dart';
-import 'components/button.dart';
-import 'components/input_field.dart';
-import 'constants/fonts.dart';
-import 'helper/regex.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
-class Signup extends StatefulWidget {
+class SigninScreen extends StatefulWidget {
   @override
-  _SignupState createState() => _SignupState();
+  _SigninScreenState createState() => _SigninScreenState();
 }
 
-class _SignupState extends State<Signup> {
-//  bool _showPassword = false;
-
+class _SigninScreenState extends State<SigninScreen> {
   static final _formKey = new GlobalKey<FormState>();
   FocusNode focusNode = FocusNode();
   TextEditingController emailEditingController = TextEditingController();
@@ -28,7 +27,6 @@ class _SignupState extends State<Signup> {
 
   @override
   Widget build(BuildContext context) {
-
     var width = MediaQuery.of(context).size.width;
     // print(MediaQuery.of(context).size.height - 606);
     return SafeArea(
@@ -53,9 +51,7 @@ class _SignupState extends State<Signup> {
               children: <Widget>[
                 Column(
                   children: [
-                    SizedBox(
-                      height: 40.0,
-                    ),
+                    const SizedBox(height: 40.0,),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [Image.asset('assets/images/dietriLogo.png')])
@@ -108,75 +104,83 @@ class _SignupState extends State<Signup> {
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: sizer(false, 35.0, context),
-                        ),
-                        GeneralTextField(
-                          textController: confrimPasswordEditingController,
-                          validator: passwordVal,
-                          hintText: 'Confirm Password',
-                          obscureText: obscurePassword,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.deny(RegExp(r"\s"))
-                          ],
-                          onChanged: (val) => setState(() {}),
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                obscurePassword = !obscurePassword;
-                              });
-                            },
-                            icon: Icon(
-                              obscurePassword
-                                  ? Icons.visibility_off_outlined
-                                  : Icons.visibility_outlined,
-                              size: sizer(true, 24, context),
-                              color: kBlack,
-                            ),
-                          ),
-                        ),
+
                         SizedBox(
                           height: sizer(false, 30.0, context),
                         ),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              RichText(
-                                  text: TextSpan(
-                                      text:
-                                          'By Signing up, you are agreeing to\nour ',
-                                      style: Fonts.robotoFont(
-                                          color: kBlack,
-                                          size: sizer(true, 15.0, context),
-                                          fontWeight: FontWeight.w400),
-                                      children: [
-                                    TextSpan(
-                                        text: 'Terms and Policy',
-                                        style: TextStyle(
-                                          fontSize: 15.0,
-                                          decoration: TextDecoration.underline,
-                                          decorationThickness: 1.5,
-                                          decorationColor: kBlack,
-                                        ))
-                                  ])),
-                            ]),
+                        const Text(
+                          'Forgot Password?',
+                          style: TextStyle(
+                            fontSize: 15.0,
+                            color: kBlack,
+                            decoration: TextDecoration.underline,
+                            decorationThickness: 1.5,
+                            decorationColor: kBlack,
+                          ),
+                        ),
+                        // Row(
+                        //     mainAxisAlignment: MainAxisAlignment.start,
+                        //     children: [
+                        //       RichText(
+                        //           text:
+                        //             TextSpan(
+                        //                 text: 'Forgot Password?',
+                        //                 style: TextStyle(
+                        //                   fontSize: 15.0,
+                        //                   decoration: TextDecoration.underline,
+                        //                   decorationThickness: 1.5,
+                        //                   decorationColor: kBlack,
+                        //                 )),)
+
+                        //     ]),
                         SizedBox(
                           height: sizer(false, 30, context),
                         ),
                         FullButton(
                           height: sizer(true, 50, context),
                           width: MediaQuery.of(context).size.width,
-                          buttonText: 'Sign Up',
+                          buttonText: 'Sign In',
                           buttonFunction: () {
-                           // Navigator.of(context).pushNamed('signIn');
+                            //Navigator.of(context).pushNamed('signIn');
                           },
                         ),
-                        SizedBox(
-                          height: 32.0,
+                        const SizedBox(
+                          height: 14.5,
+                        ),
+                        Container(
+                          child: Center(
+                            child: Image.asset(
+                              'assets/images/biometric.png',
+                              scale: 0.5,
+                              width: 58.0,
+                              height: 58.0,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 14.5,
                         ),
                         Center(
                           child: Text(
-                            'Quick Sign Up?',
+                            'Biometric',
+                            style: TextStyle(
+                                color: kBlack,
+                                fontSize: sizer(true, 15.0, context), fontWeight: FontWeight.w400),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 13.0,
+                        ),
+                        const Divider(
+                  color: Colors.black,
+                  thickness: 1.0,
+                ),
+                        const SizedBox(
+                          height: 13.0,
+                        ),
+                        Center(
+                          child: Text(
+                            'Sign In with Social',
                             style: TextStyle(
                                 color: kBlack,
                                 fontSize: sizer(true, 15.0, context)),
@@ -203,10 +207,10 @@ class _SignupState extends State<Signup> {
                                 style: TextStyle(color: kBlack),
                                 children: [
                               TextSpan(
-                                  text: "Have an account? ",
+                                  text: "New to Dietri? ",
                                   style: TextStyle(fontSize: 15.0)),
                               TextSpan(
-                                  text: 'Sign In',
+                                  text: 'Sign Up',
                                   style: TextStyle(
                                     fontSize: 15.0,
                                     decoration: TextDecoration.underline,
@@ -216,7 +220,7 @@ class _SignupState extends State<Signup> {
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
                                       Navigator.of(context)
-                                          .pushReplacementNamed('signIn');
+                                          .pushReplacementNamed('signUp');
                                     })
                             ]))
                       ]),
@@ -224,8 +228,8 @@ class _SignupState extends State<Signup> {
               ],
             ),
           ),
-        )
-      )
+        ),
+      ),
     );
   }
 }

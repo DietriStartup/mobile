@@ -1,3 +1,4 @@
+import 'package:dietri/screens/authentication/signin_screen.dart';
 import 'package:dietri/signup.dart';
 import 'package:flutter/material.dart';
 
@@ -7,8 +8,8 @@ class Routes {
 
   static Route<dynamic>? generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      // case signInRoute:
-      //   return MaterialPageRoute(builder: (context) => SigninScreen());
+      case signInRoute:
+        return MaterialPageRoute(builder: (context) => SigninScreen());
       case signUpRoute:
         return MaterialPageRoute(builder: (context) => Signup());
 
