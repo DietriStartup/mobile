@@ -11,13 +11,13 @@ class MyBottomSheet extends StatefulWidget {
   final offset;
   final color;
   final paddingTop;
-  MyBottomSheet({
-    Key? key, 
-    this.link, 
-    required this.content, 
-    this.offset, 
-    required this.color, 
-    required this.paddingTop})
+  MyBottomSheet(
+      {Key? key,
+      this.link,
+      required this.content,
+      this.offset,
+      required this.color,
+      required this.paddingTop})
       : super(key: key);
 
   final String? link;
@@ -39,19 +39,16 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
         padding: EdgeInsets.only(
           top: widget.paddingTop,
           left: sizer(true, 39.0, context),
-          bottom:  sizer(true, 31.0, context),
+          bottom: sizer(true, 31.0, context),
           right: sizer(true, 39.0, context),
         ),
-        decoration:  BoxDecoration(
+        decoration: BoxDecoration(
           color: widget.color,
-          borderRadius:const BorderRadius.only(
+          borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(24),
             topRight: Radius.circular(24),
           ),
         ),
-        child: SingleChildScrollView(
-          child: Column(
-            children: widget.content
-            )));
+        child: SingleChildScrollView(child: Column(children: widget.content)));
   }
 }
