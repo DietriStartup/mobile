@@ -20,8 +20,11 @@ class GeneralTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final TextCapitalization? textCapitalization;
   final bool obscureText;
+  final String? errorText;
   final int? maxLength;
   final List<TextInputFormatter>? inputFormatters;
+  final TextInputAction? textInputAction;
+  final Function()? onEditingComplete;
   const GeneralTextField({
     Key? key,
     this.hintText,
@@ -42,6 +45,9 @@ class GeneralTextField extends StatelessWidget {
     this.inputFormatters,
     this.maxLength,
     this.onChanged,
+    this.errorText,
+    this.textInputAction,
+    this.onEditingComplete
   }) : super(key: key);
 
   @override
@@ -50,7 +56,9 @@ class GeneralTextField extends StatelessWidget {
     return TextFormField(
       focusNode: focusNode,
       maxLength: maxLength,
-
+      
+      onEditingComplete: onEditingComplete,
+      textInputAction: textInputAction,
       textCapitalization: textCapitalization ?? TextCapitalization.none,
       controller: textController ?? _controller,
       onSaved: onSaved,
@@ -104,6 +112,8 @@ class GeneralTextField extends StatelessWidget {
             color:kPrimaryAccentColor,
           ),
         ),
+        errorText: errorText,
+        
         errorStyle: TextStyle(fontSize: sizer(true, 12, context)),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(sizer(true, 12, context)),

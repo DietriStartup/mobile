@@ -2,11 +2,12 @@ import 'package:dietri/constants/colors.dart';
 import 'package:dietri/constants/fonts.dart';
 import 'package:dietri/constants/onboarding_screen_texts.dart';
 import 'package:dietri/screens/onboarding/onboarding_screen_data.dart';
-import 'package:dietri/signup.dart';
+import 'package:dietri/view_models/onboarding_view_model.dart';
 import 'package:flutter/material.dart';
 
 class OnboardingScreens extends StatefulWidget {
-  const OnboardingScreens({Key? key}) : super(key: key);
+  const OnboardingScreens({Key? key, required this.model}) : super(key: key);
+  final OnboardingViewModel model;
 
   @override
   State<OnboardingScreens> createState() => _OnboardingScreensState();
@@ -105,18 +106,17 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
               ? Align(
                   alignment: Alignment.bottomCenter,
                   child: TextButton(
-                      onPressed: () {
-                        //TODO: PUSH TO SIGNUP SCREEN
-                        Navigator.of(context).pushNamed('signIn');
-                      },
-                      child: Text(
-                        'Let\'s Go!',
-                        style: Fonts.montserratFont(
-                            color: kBlack,
-                            size: 16,
-                            fontWeight: FontWeight.w400),
-                      )),
-                )
+                    onPressed: () async {
+                      //TODO: PUSH TO SIGNUP SCREEN
+                      await widget.model.completeOnboarding();
+                      //Navigator.of(context).pushNamed('signIn');
+                    },
+                    child: Text(
+                      'Let\'s Go!',
+                      style: Fonts.montserratFont(
+                          color: kBlack, size: 16, fontWeight: FontWeight.w400),
+                    ),
+                  ))
               : Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
