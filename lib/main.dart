@@ -4,6 +4,7 @@ import 'package:dietri/screens/home_page.dart';
 import 'package:dietri/screens/landinpage.dart';
 import 'package:dietri/screens/onboarding/onboarding_screen.dart';
 import 'package:dietri/helper/routes.dart';
+import 'package:dietri/screens/settings/settings_page.dart';
 import 'package:dietri/view_models/onboarding_view_model.dart';
 import 'package:dietri/services/auth.dart';
 import 'package:dietri/services/shared_prefereces_service.dart';
@@ -49,7 +50,7 @@ class MyApp extends StatelessWidget {
             onGenerateRoute: Routes.generateRoute,
             debugShowCheckedModeBanner: false,
             theme: ThemeData.dark().copyWith(),
-            home: const LandingPage(),
+            home: const SettingsPage(),
           );
         });
   }
