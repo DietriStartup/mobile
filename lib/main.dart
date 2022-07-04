@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
             onGenerateRoute: Routes.generateRoute,
             debugShowCheckedModeBanner: false,
             theme: ThemeData.dark().copyWith(),
-            home: const SettingsPage(),
+            home: const LandingPage(),
           );
         });
   }
