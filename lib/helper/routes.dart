@@ -8,7 +8,7 @@ import 'package:page_transition/page_transition.dart';
 import '../screens/authentication/auth_screen.dart';
 
 class Routes {
-  static const String signInRoute = '/';
+  static const String signInRoute = 'signIn';
   static const String signUpRoute = 'signUp';
   static const String settingPageRoute = 'settingPage';
   static const String languagePageRoute = 'languagePage';
@@ -19,9 +19,9 @@ class Routes {
 
   static Route<dynamic>? generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case signInRoute:
-        return MaterialPageRoute(
-            builder: (context) => AuthScreen.create(context));
+      // case signInRoute:
+      //   return MaterialPageRoute(
+      //       builder: (context) => AuthScreen.create(context));
       // case signUpRoute:
       //   return MaterialPageRoute(builder: (context) => Signup());
       case settingPageRoute:
