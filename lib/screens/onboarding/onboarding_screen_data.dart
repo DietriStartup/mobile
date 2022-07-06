@@ -27,14 +27,14 @@ class GetOnboardingPage extends StatelessWidget {
           text1,
           textAlign: TextAlign.center,
           style: Fonts.montserratFont(
-              color: black, size: 24, fontWeight: FontWeight.bold),
+              color: kBlack, size: 24, fontWeight: FontWeight.bold),
         ),
         Text(
           text2,
           textAlign: TextAlign.center,
           maxLines: 2,
           style: Fonts.montserratFont(
-              color: black, size: 16, fontWeight: FontWeight.w400),
+              color: kBlack, size: 16, fontWeight: FontWeight.w400),
         )
       ],
     );

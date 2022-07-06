@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "962761381504-j5r19d0jvjoljtp6fj01fsn20r338f4s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.dietri",
+            "certificate_hash": "af0239e52755519cc63115f8dcf134eb5054b71d"
+          }
+        },
+        {
           "client_id": "962761381504-5h2qsbcppl26q1kl2cuhqnbb21ietut5.apps.googleusercontent.com",
           "client_type": 3
         }

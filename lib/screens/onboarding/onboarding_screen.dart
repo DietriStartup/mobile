@@ -2,10 +2,12 @@ import 'package:dietri/constants/colors.dart';
 import 'package:dietri/constants/fonts.dart';
 import 'package:dietri/constants/onboarding_screen_texts.dart';
 import 'package:dietri/screens/onboarding/onboarding_screen_data.dart';
+import 'package:dietri/view_models/onboarding_view_model.dart';
 import 'package:flutter/material.dart';
 
 class OnboardingScreens extends StatefulWidget {
-  const OnboardingScreens({Key? key}) : super(key: key);
+  const OnboardingScreens({Key? key, required this.model}) : super(key: key);
+  final OnboardingViewModel model;
 
   @override
   State<OnboardingScreens> createState() => _OnboardingScreensState();
@@ -28,7 +30,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
       height: 25.0,
       width: width,
       decoration: BoxDecoration(
-        color: primaryAccentColor,
+        color: kPrimaryAccentColor,
         borderRadius: BorderRadius.circular(50.0),
       ),
     );
@@ -39,7 +41,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: whiteColor,
+      backgroundColor: kWhiteColor,
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -81,7 +83,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                     height: 30,
                     width: width,
                     decoration: const BoxDecoration(
-                        color: greyColor,
+                        color: kGreyColor,
                         borderRadius: BorderRadius.all(Radius.circular(50))),
                   ),
                 ),
@@ -104,17 +106,17 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
               ? Align(
                   alignment: Alignment.bottomCenter,
                   child: TextButton(
-                      onPressed: () {
-                        //TODO: PUSH TO SIGNUP SCREEN
-                      },
-                      child: Text(
-                        'Let\'s Go!',
-                        style: Fonts.montserratFont(
-                            color: black,
-                            size: 16,
-                            fontWeight: FontWeight.w400),
-                      )),
-                )
+                    onPressed: () async {
+                      //TODO: PUSH TO SIGNUP SCREEN
+                      await widget.model.completeOnboarding();
+                      //Navigator.of(context).pushNamed('signIn');
+                    },
+                    child: Text(
+                      'Let\'s Go!',
+                      style: Fonts.montserratFont(
+                          color: kBlack, size: 16, fontWeight: FontWeight.w400),
+                    ),
+                  ))
               : Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -131,7 +133,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                       child: Text(
                         'Skip',
                         style: Fonts.montserratFont(
-                            color: black,
+                            color: kBlack,
                             size: 16,
                             fontWeight: FontWeight.w400),
                       ),
@@ -149,7 +151,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                       child: Text(
                         'Next',
                         style: Fonts.montserratFont(
-                            color: black,
+                            color: kBlack,
                             size: 16,
                             fontWeight: FontWeight.w400),
                       ),
