@@ -3,6 +3,10 @@ import 'package:dietri/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../components/reueable_food_card.dart';
+import '../components/reuseable_breakfast_card.dart';
+import '../components/reuseable_quote_card.dart';
+
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -15,19 +19,15 @@ class Home extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'Welcome ${auth.currentUser!.displayName}',
-            style: Fonts.robotoFont(
-                color: Colors.black, size: 15, fontWeight: FontWeight.w400),
-          ),
-          Center(
-            child: Text(
-              'Home Page ',
-              style: Fonts.robotoFont(
-                  color: Colors.black, size: 24, fontWeight: FontWeight.bold),
-            ),
-          ),
+      
+        //mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          ReusableQuoteCard(),
+          SizedBox(height: 20,),
+          ReuseableBreakfastCard(),
+          SizedBox(height: 20,),
+          ReuseableFoodCard(),
+          
         ],
       ),
     );

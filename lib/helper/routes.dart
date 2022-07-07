@@ -3,7 +3,7 @@ import 'package:dietri/screens/settings/goal_settings.dart';
 import 'package:dietri/screens/settings/language_settings_page.dart';
 import 'package:dietri/screens/settings/settings_page.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
+
 
 import '../screens/authentication/auth_screen.dart';
 
@@ -47,25 +47,25 @@ class Routes {
   }
 
 
-  PageRoute _getPageRoute(
-      {required String routeName, required Widget viewToShow}) {
-    return MaterialPageRoute(
-        settings: RouteSettings(
-          name: routeName,
-        ),
-        builder: (_) => viewToShow);
-  }
+  // PageRoute _getPageRoute(
+  //     {required String routeName, required Widget viewToShow}) {
+  //   return MaterialPageRoute(
+  //       settings: RouteSettings(
+  //         name: routeName,
+  //       ),
+  //       builder: (_) => viewToShow);
+  // }
 
-  PageRoute _getTransistionPageRoute({
-    required String routeName,
-    required Widget viewToShow,
-    PageTransitionType type = PageTransitionType.bottomToTop,
-  }) {
-    return PageTransition(
-        settings: RouteSettings(
-          name: routeName,
-        ),
-        type: type,
-        child:viewToShow);
-  }
+  // PageRoute _getTransistionPageRoute({
+  //   required String routeName,
+  //   required Widget viewToShow,
+  //   PageTransitionType type = PageTransitionType.bottomToTop,
+  // }) {
+  //   return PageTransition(
+  //       settings: RouteSettings(
+  //         name: routeName,
+  //       ),
+  //       type: type,
+  //       child:viewToShow);
+  // }
 }
