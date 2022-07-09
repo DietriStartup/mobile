@@ -1,4 +1,6 @@
-import 'package:dietri/screens/home_page.dart';
+
+import 'package:dietri/screens/kyc/kyc_widget.dart';
+import 'package:dietri/screens/mainscreens/kycorhomepage.dart';
 import 'package:dietri/view_models/onboarding_view_model.dart';
 import 'package:dietri/screens/onboarding_signin.dart';
 import 'package:dietri/services/auth.dart';
@@ -23,18 +25,10 @@ class LandingPage extends StatelessWidget {
             final user = snapshot.data;
 
             if (user == null) {
-              return ChangeNotifierProvider<OnboardingViewModel>(
-                  create: (_) => OnboardingViewModel(
-                      sharedPreferencesService: sP, value: sP.isOnboardingComplete()),
-                  builder: (context, child) {
-                    return Consumer<OnboardingViewModel>(
-                        builder: (__, value, _) {
-                      return OnboardingOrSignUp(onboardingViewModel: value);
-                    });
-                  });
+             return OnboardingOrSignUp.create(context, sP);
             }
 
-            return const HomePage();
+            return  const KYCOrHomePage();
           }
           return const Scaffold(
             body: Center(
@@ -42,9 +36,5 @@ class LandingPage extends StatelessWidget {
             ),
           );
         });
-  }
-
-  getOnboardingValue(Future<bool> onBoarding) async {
-    return await onBoarding;
   }
 }

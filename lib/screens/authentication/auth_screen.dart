@@ -6,6 +6,7 @@ import 'package:dietri/constants/colors.dart';
 import 'package:dietri/constants/fonts.dart';
 import 'package:dietri/helper/sizer.dart';
 import 'package:dietri/services/auth.dart';
+import 'package:dietri/services/database.dart';
 import 'package:dietri/view_models/sign_in_page_vm.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
@@ -18,8 +19,9 @@ class AuthScreen extends StatefulWidget {
 
   static Widget create(BuildContext context) {
     final auth = Provider.of<AuthBase>(context);
+    final db = Provider.of<Database>(context);
     return ChangeNotifierProvider<SignInPageViewModel>(
-      create: (_) => SignInPageViewModel(auth: auth),
+      create: (_) => SignInPageViewModel(auth: auth, db: db),
       child: Consumer<SignInPageViewModel>(
         builder: (_, model, __) => AuthScreen(
           model: model,

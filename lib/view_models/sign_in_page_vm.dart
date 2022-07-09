@@ -1,10 +1,12 @@
 import 'package:dietri/helper/validators.dart';
 import 'package:dietri/services/auth.dart';
+import 'package:dietri/services/database.dart';
 import 'package:flutter/cupertino.dart';
 
 class SignInPageViewModel with EmailAndPasswordValidators, ChangeNotifier {
-  SignInPageViewModel(
+  SignInPageViewModel( 
       {required this.auth,
+      required this.db,
       this.email = '',
       this.password = '',
       this.isLoading = false,
@@ -14,6 +16,7 @@ class SignInPageViewModel with EmailAndPasswordValidators, ChangeNotifier {
       this.obscureConfirmPassWord = true,
       this.submitted = false});
   final AuthBase auth;
+  final Database db;
   String email;
   String password;
   String confirmPassword;
@@ -77,9 +80,13 @@ class SignInPageViewModel with EmailAndPasswordValidators, ChangeNotifier {
     try {
       if (isSignInPage) {
         await auth.signInWithEmailandPassword(email.trim(), password.trim());
+
       } else {
         await auth.createUserWithEmailandPassword(
             email.trim(), password.trim());
+        final user = await auth.createUserWithEmailandPassword(
+            email.trim(), password.trim());    
+        db.createUserinDatabase(user!);
       }
       //await auth.signInWithEmailandPassword(email, password);
     } catch (e) {
@@ -91,7 +98,12 @@ class SignInPageViewModel with EmailAndPasswordValidators, ChangeNotifier {
   Future<void> signInWithGoogle() async {
     updateWith(isLoading: true);
     try {
-      isSignInPage ? await auth.signInWithGoogle() : null;
+     await  auth.signInWithGoogle();
+     final user = await auth.signInWithGoogle();
+      db.createUserinDatabase(user!.user!);
+      if (user.additionalUserInfo!.isNewUser) {
+        db.createUserinDatabase(user.user!);
+      }
     } catch (e) {
       updateWith(isLoading: false);
       rethrow;

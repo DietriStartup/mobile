@@ -1,7 +1,8 @@
+import 'package:dietri/components/dietre_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-enum TabItem { home, explore, settings, profile }
+enum TabItem { home, savedmeals, explore, settings, profile }
 
 class TabItemData {
   const TabItemData({required this.title, required this.icon});
@@ -9,11 +10,12 @@ class TabItemData {
   final IconData icon;
 
   static const Map<TabItem, TabItemData> allTabItems = {
-    TabItem.home: TabItemData(icon: Icons.home_outlined, title: 'Home'),
-    TabItem.explore: TabItemData(icon: Icons.search_outlined, title: 'Explore'),
+    TabItem.home: TabItemData(icon: Dietre.newhome, title: 'Home'),
+    TabItem.savedmeals: TabItemData(title: 'Saved Meals', icon: Icons.bookmark_outline_rounded),
+    TabItem.explore: TabItemData(icon: Dietre.search_normal, title: 'Explore'),
     TabItem.settings:
-        TabItemData(icon: Icons.settings_outlined, title: 'Settings'),
+        TabItemData(icon: Dietre.setting_2, title: 'Settings'),
     TabItem.profile:
-        TabItemData(icon: Icons.person_outline_outlined, title: 'Profile'),
+        TabItemData(icon: Dietre.profile_circle, title: 'Profile'),
   };
 }

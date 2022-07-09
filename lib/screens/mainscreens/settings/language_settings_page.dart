@@ -1,11 +1,11 @@
+import 'package:dietri/components/settings/language_tiles.dart';
+import 'package:dietri/constants/colors.dart';
+import 'package:dietri/constants/fonts.dart';
+import 'package:dietri/enum/language.dart';
+import 'package:dietri/helper/sizer.dart';
 import 'package:flutter/material.dart';
 
-import '../../components/settings/language_tiles.dart';
-import '../../components/settings/setting_header.dart';
-import '../../constants/colors.dart';
-import '../../constants/fonts.dart';
-import '../../enum/language.dart';
-import '../../helper/sizer.dart';
+
 
 class LanguageSettings extends StatefulWidget {
   const LanguageSettings({ Key? key }) : super(key: key);

@@ -6,7 +6,7 @@ abstract class AuthBase {
   User? get currentUser;
   Stream<User?> authStateChanges();
   Future<User?> signInAnonymously();
-  Future<User?> signInWithGoogle();
+  Future<UserCredential?> signInWithGoogle();
   Future<User?> signInWithEmailandPassword(String email, String password);
   Future<User?> createUserWithEmailandPassword(String email, String password);
   Future<void> signOut();
@@ -38,7 +38,7 @@ class Auth implements AuthBase {
   Stream<User?> authStateChanges() => _firebaseAuth.authStateChanges();
 
   @override
-  Future<User?> signInWithGoogle() async {
+  Future<UserCredential?> signInWithGoogle() async {
     final googleSignIn = GoogleSignIn();
     final googleUser = await googleSignIn.signIn();
     if (googleUser != null) {
@@ -49,7 +49,8 @@ class Auth implements AuthBase {
           idToken: googleAuth.idToken,
           accessToken: googleAuth.accessToken,
         ));
-        return userCredential.user;
+
+        return userCredential;
       } else {
         throw FirebaseAuthException(
             code: 'ERROR_MISSING_GOOGLE_IDTOKEN',

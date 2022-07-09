@@ -1,11 +1,9 @@
 
-import 'package:dietri/screens/settings/goal_settings.dart';
-import 'package:dietri/screens/settings/language_settings_page.dart';
-import 'package:dietri/screens/settings/settings_page.dart';
+import 'package:dietri/screens/mainscreens/settings/goal_settings.dart';
+import 'package:dietri/screens/mainscreens/settings/language_settings_page.dart';
+import 'package:dietri/screens/mainscreens/settings/settings_page.dart';
 import 'package:flutter/material.dart';
 
-
-import '../screens/authentication/auth_screen.dart';
 
 class Routes {
   static const String signInRoute = 'signIn';
@@ -25,11 +23,11 @@ class Routes {
       // case signUpRoute:
       //   return MaterialPageRoute(builder: (context) => Signup());
       case settingPageRoute:
-        return MaterialPageRoute(builder: (context) => SettingsPage());
+        return MaterialPageRoute(builder: (context) => const SettingsPage());
       case languagePageRoute:
-        return MaterialPageRoute(builder: (context) => LanguageSettings());
+        return MaterialPageRoute(builder: (context) => const LanguageSettings());
       case goalPageRoute:
-        return MaterialPageRoute(builder: (context) => GoalSettings());
+        return MaterialPageRoute(builder: (context) => const GoalSettings());
       // case languagePageRoute:
       //   return  _getTransistionPageRoute(
       //     type: PageTransitionType.topToBottom,

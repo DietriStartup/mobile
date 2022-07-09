@@ -49,7 +49,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
             SizedBox(
               height: height * 0.7,
               child: PageView(
-                physics: const ClampingScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 onPageChanged: (page) {
                   setState(() {
                     _currentPage = page;

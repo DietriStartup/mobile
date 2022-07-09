@@ -1,11 +1,10 @@
+import 'package:dietri/components/settings/language_tiles.dart';
+import 'package:dietri/constants/colors.dart';
+import 'package:dietri/enum/language.dart';
 import 'package:flutter/material.dart';
 
-import '../../components/settings/language_tiles.dart';
-import '../../components/settings/setting_header.dart';
-import '../../constants/colors.dart';
-import '../../constants/fonts.dart';
-import '../../enum/language.dart';
-import '../../helper/sizer.dart';
+import '../../../constants/fonts.dart';
+import '../../../helper/sizer.dart';
 
 class GoalSettings extends StatefulWidget {
   const GoalSettings({Key? key}) : super(key: key);

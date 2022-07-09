@@ -1,11 +1,15 @@
-import 'package:dietri/screens/explore.dart';
-import 'package:dietri/screens/home.dart';
-import 'package:dietri/screens/home/cupertino_tab_scaffold.dart';
-import 'package:dietri/screens/profile.dart';
-import 'package:dietri/screens/settings/settings_page.dart';
+
+
+import 'package:dietri/screens/mainscreens/home.dart';
+import 'package:dietri/screens/mainscreens/cupertino_tab_scaffold.dart';
+import 'package:dietri/screens/mainscreens/explore.dart';
+import 'package:dietri/screens/mainscreens/settings/settings_page.dart';
+
+import 'package:dietri/screens/mainscreens/profile.dart';
+import 'package:dietri/screens/saved_meals.dart';
 import 'package:flutter/material.dart';
 
-import '../models/tab_item.dart';
+import '../../models/tab_item.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -37,6 +41,7 @@ class _HomePageState extends State<HomePage> {
   Map<TabItem, WidgetBuilder> get widgetBuilders {
     return {
       TabItem.home: (_) => const Home(),
+      TabItem.savedmeals: (_) => const SavedMeals(),
       TabItem.explore: (_) => const ExplorePage(),
       TabItem.settings: (context) => const SettingsPage(),
       TabItem.profile: (_) => const ProfilePage()

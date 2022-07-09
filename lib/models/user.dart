@@ -1,14 +1,49 @@
-
+import 'package:dietri/helper/enums.dart';
+import 'package:dietri/helper/user_utils.dart';
 
 class UserModel {
-  UserModel({required this.name, required this.email});
+  UserModel({
+    required this.name,
+    required this.email,
+    required this.photoURL,
+    this.gender,
+    this.isKYCComplete,
+    this.goal,
+    this.weight,
+    this.weightParam,
+  });
   final String name;
   final String email;
+  final String? photoURL;
+  final bool? isKYCComplete;
+  final Gender? gender;
+  final Goals? goal;
+  final Weight? weight;
+  final String? weightParam;
 
-  toMap(){
-    return<String, dynamic>{
-      
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'email': email,
+      'photoURL': photoURL,
+      'isKYCComplete': isKYCComplete,
+      'gender': UserUtils.genderToInt(gender),
+      'goal': UserUtils.goalToInt(goal),
+      'weight': UserUtils.getWeightString(weight),
+      'weightParam': weightParam,
     };
   }
 
+  factory UserModel.fromMap(Map<String, dynamic> map) {
+    return UserModel(
+      name: map['name'] ?? '',
+      email: map['email'] ?? '',
+      photoURL: map['photoURL'] ?? '',
+      isKYCComplete: map['isKYCComplete'] ?? false,
+      gender: UserUtils.intToGender(map['gender']) ?? Gender.others,
+      goal: UserUtils.intToGoal(map['goal']) ?? Goals.maintainweight,
+      //weight: map['weight']?.toInt() ?? 0,
+      weightParam: map['weightParam'] ?? '',
+    );
+  }
 }
