@@ -52,25 +52,25 @@ class MyApp extends StatelessWidget {
                 inputDecorationTheme: InputDecorationTheme(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
+                    borderSide: const BorderSide(
                       color: kPrimaryColor,
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
+                    borderSide: const BorderSide(
                       color: kPrimaryColor,
                     ),
                   ),
                   disabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
+                    borderSide: const BorderSide(
                       color: kPrimaryColor,
                     ),
                   ),
                 )),
             debugShowCheckedModeBanner: false,
-            home: LandingPage(),
+            home: const LandingPage(),
           );
         });
   }
