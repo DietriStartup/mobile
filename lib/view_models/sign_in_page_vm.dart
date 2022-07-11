@@ -100,8 +100,8 @@ class SignInPageViewModel with EmailAndPasswordValidators, ChangeNotifier {
     try {
      await  auth.signInWithGoogle();
      final user = await auth.signInWithGoogle();
-      db.createUserinDatabase(user!.user!);
-      if (user.additionalUserInfo!.isNewUser) {
+      //db.createUserinDatabase(user!.user!);
+      if (user!.additionalUserInfo!.isNewUser) {
         db.createUserinDatabase(user.user!);
       }
     } catch (e) {

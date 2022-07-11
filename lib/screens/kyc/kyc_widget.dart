@@ -44,35 +44,51 @@ class _KYCScreensState extends State<KYCScreens> {
 
   KYCViewModel get model => widget.model;
 
-  void _updateUserGenderinDataBase()async{
+  void _updateUserGenderinDataBase() async {
     try {
       await model.updateUserParams(gender: model.gender);
     } on FirebaseException catch (e) {
-      showExceptionAlertDialog(context, title: 'Something went wrong', exception: e);
+      showExceptionAlertDialog(context,
+          title: 'Something went wrong', exception: e);
     } catch (e) {
-      showAlertDialog(context, title: 'Unknown Error', content: 'oops, something\'s not right', defaultActionText: 'OK');
+      showAlertDialog(context,
+          title: 'Unknown Error',
+          content: 'oops, something\'s not right',
+          defaultActionText: 'OK');
     }
   }
 
-  void _updateUserGoalsinDataBase()async{
+  void _updateUserGoalsinDataBase() async {
     try {
       await model.updateUserParams(goals: model.goals);
     } on FirebaseException catch (e) {
-      showExceptionAlertDialog(context, title: 'Something went wrong', exception: e);
+      showExceptionAlertDialog(context,
+          title: 'Something went wrong', exception: e);
     } catch (e) {
-      showAlertDialog(context, title: 'Unknown Error', content: 'oops, something\'s not right', defaultActionText: 'OK');
+      showAlertDialog(context,
+          title: 'Unknown Error',
+          content: 'oops, something\'s not right',
+          defaultActionText: 'OK');
     }
   }
 
-  void _updateUserWeightinDataBase()async{
+  void _updateUserWeightinDataBase() async {
     try {
-      await model.updateUserParams(weight: model.weight, weightString: _editingController.text.trim(), isKYCComplete: true);
+      await model.updateUserParams(
+          weight: model.weight,
+          weightString: _editingController.text.trim(),
+          isKYCComplete: true);
     } on FirebaseException catch (e) {
-      showExceptionAlertDialog(context, title: 'Something went wrong', exception: e);
+      showExceptionAlertDialog(context,
+          title: 'Something went wrong', exception: e);
     } catch (e) {
-      showAlertDialog(context, title: 'Unknown Error', content: 'oops, something\'s not right', defaultActionText: 'OK');
+      showAlertDialog(context,
+          title: 'Unknown Error',
+          content: 'oops, something\'s not right',
+          defaultActionText: 'OK');
     }
   }
+
   List<Widget> _buildPageIndicator() {
     List<Widget> list = [];
     for (int i = 0; i < model.numPages; i++) {
@@ -115,7 +131,6 @@ class _KYCScreensState extends State<KYCScreens> {
 
   @override
   Widget build(BuildContext context) {
-    
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
         appBar: AppBar(
@@ -147,7 +162,7 @@ class _KYCScreensState extends State<KYCScreens> {
               SizedBox(
                 height: height * 0.7,
                 child: PageView(
-                  physics: const ClampingScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   onPageChanged: (page) {
                     model.updateCurrentPage(page);
                   },
@@ -270,7 +285,9 @@ class _KYCScreensState extends State<KYCScreens> {
       case 3:
         return TextButton(
             onPressed: () {
-              _editingController.text.isNotEmpty ? _updateUserWeightinDataBase() : null;
+              _editingController.text.isNotEmpty
+                  ? _updateUserWeightinDataBase()
+                  : null;
               _editingController.clear();
               if (_pageController.hasClients) {
                 _pageController.animateToPage(

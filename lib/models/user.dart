@@ -18,7 +18,7 @@ class UserModel {
   final bool? isKYCComplete;
   final Gender? gender;
   final Goals? goal;
-  final Weight? weight;
+  final String? weight;
   final String? weightParam;
 
   Map<String, dynamic> toMap() {
@@ -29,7 +29,7 @@ class UserModel {
       'isKYCComplete': isKYCComplete,
       'gender': UserUtils.genderToInt(gender),
       'goal': UserUtils.goalToInt(goal),
-      'weight': UserUtils.getWeightString(weight),
+      'weight': weight,
       'weightParam': weightParam,
     };
   }
@@ -42,7 +42,7 @@ class UserModel {
       isKYCComplete: map['isKYCComplete'] ?? false,
       gender: UserUtils.intToGender(map['gender']) ?? Gender.others,
       goal: UserUtils.intToGoal(map['goal']) ?? Goals.maintainweight,
-      //weight: map['weight']?.toInt() ?? 0,
+      weight: map['weight'] ?? '',
       weightParam: map['weightParam'] ?? '',
     );
   }

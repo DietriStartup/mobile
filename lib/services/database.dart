@@ -50,5 +50,7 @@ class FirestoreDb implements Database {
       });
 
   @override
-  Stream<UserModel?> userStream(String uid)  => _firestoreService.documentStream(path: APIPath.userPath(id: uid), builder: (data, docId) => UserModel.fromMap(data?? {}));
+  Stream<UserModel?> userStream(String uid) => _firestoreService.documentStream(
+      path: APIPath.userPath(id: uid),
+      builder: (data, docId) => UserModel.fromMap(data ?? {}));
 }

@@ -27,7 +27,7 @@ class UserUtils {
     }
   }
 
-  static Goals? intToGoal(int goalNumber) {
+  static Goals? intToGoal(int? goalNumber) {
     switch (goalNumber) {
       case 0:
         return Goals.gainweight;

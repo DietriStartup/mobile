@@ -1,3 +1,4 @@
+import 'package:dietri/constants/colors.dart';
 import 'package:dietri/helper/permissions.dart';
 
 import 'package:dietri/screens/landinpage.dart';
@@ -43,8 +44,31 @@ class MyApp extends StatelessWidget {
               create: (_) => SharedPreferencesService(sharedPreferences!)),
         ],
         builder: (context, child) {
-          return const MaterialApp(
+          return MaterialApp(
             onGenerateRoute: Routes.generateRoute,
+            theme: ThemeData(
+                dialogBackgroundColor: kPrimaryAccentColor,
+                primaryColor: kPrimaryColor,
+                inputDecorationTheme: InputDecorationTheme(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: kPrimaryColor,
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: kPrimaryColor,
+                    ),
+                  ),
+                  disabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: kPrimaryColor,
+                    ),
+                  ),
+                )),
             debugShowCheckedModeBanner: false,
             home: LandingPage(),
           );
