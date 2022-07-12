@@ -23,7 +23,9 @@ class KYCOrHomePage extends StatelessWidget {
           if (snapshot.hasData && snapshot.data != null) {
             final userModel = snapshot.data;
             if (userModel!.isKYCComplete == true) {
-              return HomePage(userModel: userModel,);
+              return HomePage(
+                userModel: userModel,
+              );
             }
             return KYCScreens.create(context);
           }
@@ -34,4 +36,3 @@ class KYCOrHomePage extends StatelessWidget {
         }));
   }
 }
-

@@ -1,11 +1,13 @@
 import 'package:dietri/components/customappbar.dart';
 import 'package:dietri/constants/fonts.dart';
+import 'package:dietri/models/user.dart';
 import 'package:dietri/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SavedMeals extends StatelessWidget {
-  const SavedMeals({Key? key}) : super(key: key);
+  const SavedMeals({Key? key,required this.userModel}) : super(key: key);
+  final UserModel userModel;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,7 @@ class SavedMeals extends StatelessWidget {
                 height: 100,
                 width: 110,
               ),
-              auth: auth),
+              userModel: userModel),
           preferredSize: Size.fromHeight(70)),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,

@@ -1,3 +1,4 @@
+import 'package:dietri/models/user.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/colors.dart';
@@ -8,17 +9,18 @@ class CustomAppBar extends StatelessWidget {
   const CustomAppBar({
     Key? key,
     required this.title,
-    required this.auth,
+    required this.userModel,
   }) : super(key: key);
 
-  final AuthBase auth;
+  final UserModel userModel;
   final Widget title;
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: kPrimaryColor,
+      backgroundColor: kWhiteColor,
       centerTitle: true,
+      
       title: title,
       leadingWidth: 80,
       elevation: 0,
@@ -30,16 +32,14 @@ class CustomAppBar extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(50)),
               child: Image.network(
-                auth.currentUser!.photoURL!,
-                height: 30,
+                userModel.photoURL!,
+                height: 70,
               ),
             ),
             Text(
-              'Hi, ${auth.currentUser!.displayName!.split(' ').first}',
+              'Hi, ${userModel.name.split(' ').first}',
               style: Fonts.montserratFont(
-                  color: Colors.white,
-                  size: 10,
-                  fontWeight: FontWeight.w500),
+                  color: Colors.black, size: 10, fontWeight: FontWeight.w500),
             )
           ],
         ),

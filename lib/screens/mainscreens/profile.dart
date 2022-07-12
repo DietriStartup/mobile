@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dietri/components/show_alert_dialog.dart';
+import 'package:dietri/components/show_exception_dialog.dart';
 import 'package:dietri/constants/fonts.dart';
 import 'package:dietri/helper/enums.dart';
 import 'package:dietri/helper/sizer.dart';
@@ -15,6 +18,17 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthBase>(context);
+
+    void _signOut() async {
+      try {
+        await auth.signOut();
+      } on FirebaseException catch (e) {
+        showExceptionAlertDialog(context,
+            title: 'Couldn\'t sign out', exception: e);
+      }
+    }
+
     String _getGoalString(Goals? goal) {
       switch (goal) {
         case Goals.gainweight:
@@ -66,6 +80,30 @@ class ProfilePage extends StatelessWidget {
                   ),
                 ),
                 _userDetailsWidget(_getGoalString),
+                SizedBox(
+                  height: 50,
+                ),
+                TextButton(
+                    onPressed: () {
+                      showAlertDialog(context,
+                              title: 'Logout',
+                              content: 'Are you sure you want to logout?',
+                              defaultActionText: 'YES',
+                              cancelActionText: 'NO')
+                          .then((value) {
+                        if (value == true) {
+                          _signOut();
+                        }
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                        primary: kPrimaryColor,
+                        minimumSize: const Size(100, 50)),
+                    child: Text('Logout',
+                        style: Fonts.montserratFont(
+                            color: Colors.white,
+                            size: 16,
+                            fontWeight: FontWeight.normal)))
               ],
             ),
           ),

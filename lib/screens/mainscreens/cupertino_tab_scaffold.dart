@@ -20,7 +20,6 @@ class CupertinoHomeScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoTabScaffold(
-      
       tabBuilder: (context, index) {
         final item = TabItem.values[index];
         return CupertinoTabView(
@@ -30,13 +29,13 @@ class CupertinoHomeScaffold extends StatelessWidget {
         );
       },
       tabBar: CupertinoTabBar(
-        activeColor: kPrimaryAccentColor,
         inactiveColor: Colors.white,
+        activeColor: kPrimaryAccentColor,
         backgroundColor: kPrimaryColor,
         items: [
           _buildItem(TabItem.home),
-          _buildItem(TabItem.savedmeals),
           _buildItem(TabItem.explore),
+          _buildItem(TabItem.savedmeals),
           _buildItem(TabItem.settings),
           _buildItem(TabItem.profile)
         ],
@@ -53,10 +52,10 @@ class CupertinoHomeScaffold extends StatelessWidget {
     return BottomNavigationBarItem(
       icon: Icon(
         itemData!.icon,
-        size: 23,
+        size: 25,
         color: color,
       ),
-      label: itemData.title,
+      //label: itemData.title,
       backgroundColor: color,
     );
   }

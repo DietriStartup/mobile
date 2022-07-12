@@ -1,5 +1,3 @@
-
-
 import 'package:dietri/models/user.dart';
 import 'package:dietri/screens/mainscreens/home.dart';
 import 'package:dietri/screens/mainscreens/cupertino_tab_scaffold.dart';
@@ -13,7 +11,7 @@ import 'package:flutter/material.dart';
 import '../../models/tab_item.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key,required this.userModel}) : super(key: key);
+  const HomePage({Key? key, required this.userModel}) : super(key: key);
   final UserModel userModel;
 
   @override
@@ -42,9 +40,13 @@ class _HomePageState extends State<HomePage> {
 
   Map<TabItem, WidgetBuilder> get widgetBuilders {
     return {
-      TabItem.home: (_) => const Home(),
-      TabItem.savedmeals: (_) => const SavedMeals(),
+      TabItem.home: (_) => Home(
+            userModel: widget.userModel,
+          ),
       TabItem.explore: (_) => const ExplorePage(),
+      TabItem.savedmeals: (_) => SavedMeals(
+            userModel: widget.userModel,
+          ),
       TabItem.settings: (context) => const SettingsPage(),
       TabItem.profile: (_) => ProfilePage(userModel: widget.userModel)
     };

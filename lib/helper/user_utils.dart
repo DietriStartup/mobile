@@ -65,4 +65,30 @@ class UserUtils {
         return 'kg';
     }
   }
+
+  static int? foodTypetoInt(FoodType? foodType){
+    switch (foodType) {
+      case FoodType.breakfast:
+        return 0;
+      case FoodType.lunch:
+        return 1;
+      case FoodType.dinner:
+        return 2;
+      default:
+      return null;
+    }
+  }
+
+  static FoodType? intToFoodType(int? foodTypeNumber){
+    switch (foodTypeNumber) {
+      case 0:
+      return FoodType.breakfast;
+      case 1:
+      return FoodType.lunch;
+      case 2:
+      return FoodType.dinner;
+      default:
+      return null;
+    }
+  }
 }

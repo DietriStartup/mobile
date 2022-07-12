@@ -5,8 +5,8 @@ import 'empty_content.dart';
 
 typedef ItemWidgetBuilder<T> = Widget Function(BuildContext context, T item);
 
-class ListItemsBuilder<T> extends StatelessWidget {
-  const ListItemsBuilder(
+class GridViewItemsBuilder<T> extends StatelessWidget {
+  const GridViewItemsBuilder(
       {Key? key,
       required this.snapshot,
       required this.itemBuilder,

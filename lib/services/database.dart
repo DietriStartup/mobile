@@ -1,5 +1,6 @@
 import 'package:dietri/helper/enums.dart';
 import 'package:dietri/helper/user_utils.dart';
+import 'package:dietri/models/food.dart';
 import 'package:dietri/models/user.dart';
 import 'package:dietri/services/api_path.dart';
 import 'package:dietri/services/firestore_service.dart';
@@ -12,6 +13,7 @@ abstract class Database {
   Future<void> updateUserWeight(
       String uid, Weight weight, String weightParam, bool isKYCComplete);
   Stream<UserModel?> userStream(String uid);
+  Stream<List<Food>> mealPlanStream(String uid);
 }
 
 class FirestoreDb implements Database {
@@ -53,4 +55,7 @@ class FirestoreDb implements Database {
   Stream<UserModel?> userStream(String uid) => _firestoreService.documentStream(
       path: APIPath.userPath(id: uid),
       builder: (data, docId) => UserModel.fromMap(data ?? {}));
+
+  @override
+  Stream<List<Food>> mealPlanStream(String uid) => _firestoreService.collectionStream(path: APIPath.mealPlanPath(id: uid), builder: (data, docId) => Food.fromMap(data ?? {}));
 }
