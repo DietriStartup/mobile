@@ -2,6 +2,7 @@ import 'package:dietri/components/empty_meal_plan%20card.dart';
 import 'package:dietri/components/food_card.dart';
 import 'package:dietri/components/mealplan_card.dart';
 import 'package:dietri/components/quoteoftheday_card.dart';
+import 'package:dietri/components/show_bottom_modal_sheet.dart';
 import 'package:dietri/components/suggested_mealplancard.dart';
 import 'package:dietri/components/swiper_view_item_builder.dart';
 import 'package:dietri/constants/colors.dart';
@@ -25,6 +26,16 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     final db = Provider.of<Database>(context);
     final auth = Provider.of<AuthBase>(context);
+    final height = MediaQuery.of(context).size.height;
+
+    List<Widget> _getfoodProcedure(List procedure) {
+      var textWidgets = <Text>[];
+      for (var i = 0; i < procedure.length; i++) {
+        textWidgets.add(Text('step${i + 1} : ${procedure[i]}'));
+      }
+      return textWidgets;
+    }
+
     return Scaffold(
       // appBar: PreferredSize(
       //   preferredSize: Size.fromHeight(150),
@@ -122,11 +133,14 @@ class Home extends StatelessWidget {
               SizedBox(
                 height: sizer(false, 250, context),
                 child: StreamBuilder<List<Food>>(
-                  stream: db.mealPlanStream(auth.currentUser!.uid),
+                  stream: db.userMealPlanStream(auth.currentUser!.uid),
                   builder: (context, snapshot) {
                     return SwiperViewItemsBuilder<Food>(
                         snapshot: snapshot,
                         itemBuilder: (context, food) => MealPlanCard(
+                            onPressed: () {
+                              UserUtils.dietriModalBSheet(context, food, height);
+                            },
                             color: kWhiteColor,
                             color1: kPrimaryColor,
                             foodType: UserUtils.intToFoodType(food.foodType)!,
@@ -163,7 +177,7 @@ class Home extends StatelessWidget {
                   height: sizer(false, 230, context),
                   width: sizer(true, 470, context),
                   child: StreamBuilder<List<Food>>(
-                    stream: db.mealPlanStream(auth.currentUser!.uid),
+                    stream: db.userMealPlanStream(auth.currentUser!.uid),
                     builder: (context, snapshot) {
                       return SwiperViewItemsBuilder<Food>(
                           snapshot: snapshot,
@@ -174,7 +188,7 @@ class Home extends StatelessWidget {
                               foodName: food.foodName),
                           isReverse: false,
                           autoPlay: true,
-                          pagination: SwiperPagination(
+                          pagination: const SwiperPagination(
                               margin: EdgeInsets.only(top: 10, bottom: 3)),
                           viewPortFraction: 0.9,
                           scale: 0.6,
@@ -193,4 +207,7 @@ class Home extends StatelessWidget {
       ),
     );
   }
-}
+
+ 
+  }
+

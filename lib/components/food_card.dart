@@ -8,11 +8,11 @@ class FoodCard extends StatelessWidget {
       required this.addNewMeal,
       required this.saveMeal,
       required this.isSavedMeal,
-      required this.showOptions,
+      required this.showMealPlan,
       required this.foodName,
       required this.foodURL})
       : super(key: key);
-  final VoidCallback addNewMeal, saveMeal, showOptions;
+  final VoidCallback addNewMeal, saveMeal, showMealPlan;
   final bool isSavedMeal;
   final String foodName;
   final String foodURL;
@@ -20,23 +20,25 @@ class FoodCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: showOptions,
+      onTap: showMealPlan,
       child: Container(
         height: 100,
         width: 180,
         decoration: BoxDecoration(
-            color: kPrimaryAccentColor, borderRadius: BorderRadius.circular(5)),
+            color: kPrimaryAccentColor,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: kPrimaryColor)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Image.network(
-              foodURL,
+            Image.asset(
+              'assets/images/dietriBack.png',
               fit: BoxFit.fitHeight,
               height: 100,
               width: 140,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 5.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -44,7 +46,7 @@ class FoodCard extends StatelessWidget {
                     foodName,
                     style: Fonts.montserratFont(
                         color: kPrimaryColor,
-                        size: 14,
+                        size: 13,
                         fontWeight: FontWeight.normal),
                   ),
                   Row(

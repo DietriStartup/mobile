@@ -14,6 +14,8 @@ Future<dynamic> showAlertDialog(BuildContext context,
     return showDialog(
         context: context,
         builder: (context) => AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)),
               content: Text(
                 content ?? 'Error Message',
                 style: Fonts.montserratFont(

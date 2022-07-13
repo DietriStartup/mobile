@@ -47,6 +47,8 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             onGenerateRoute: Routes.generateRoute,
             theme: ThemeData(
+                // canvasColor: Colors.w,
+                
                 dialogBackgroundColor: kPrimaryAccentColor,
                 primaryColor: kPrimaryColor,
                 inputDecorationTheme: InputDecorationTheme(
@@ -57,6 +59,12 @@ class MyApp extends StatelessWidget {
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(
+                      color: kPrimaryColor,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: const BorderSide(
                       color: kPrimaryColor,

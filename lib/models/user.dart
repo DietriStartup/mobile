@@ -1,5 +1,6 @@
 import 'package:dietri/helper/enums.dart';
 import 'package:dietri/helper/user_utils.dart';
+import 'package:dietri/models/food.dart';
 
 class UserModel {
   UserModel({
@@ -33,6 +34,7 @@ class UserModel {
       'weightParam': weightParam,
     };
   }
+  
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(

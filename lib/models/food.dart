@@ -6,16 +6,14 @@ class Food {
       required this.foodURL, 
       required this.foodIngredients,
       required this.foodType,
-      required this.procedure1,
-      required this.procedure2,
-      required this.procedure3});
+      required this.procedure,
+    });
   final String foodName;
   final String foodIngredients;
   final String foodURL;
   final int foodType;
-  final String procedure1;
-  final String procedure2;
-  final String procedure3;
+  final List<dynamic> procedure;
+
 
 
   Map<String, dynamic> toMap() {
@@ -23,9 +21,8 @@ class Food {
       'foodName': foodName,
       'foodIngredients': foodIngredients,
       'foodType': foodType,
-      'procedure1': procedure1,
-      'procedure2': procedure2,
-      'procedure3': procedure3,
+      'procedure': procedure,
+     
     };
   }
 
@@ -35,9 +32,7 @@ class Food {
      foodURL: map['foodURL'] ?? '',
      foodIngredients: map['foodIngredients'] ?? '',
       foodType:map['foodType'] ?? 0,
-      procedure1:map['procedure1'] ?? '',
-      procedure2: map['procedure2'] ?? '',
-      procedure3: map['procedure3'] ?? '',
+      procedure: map['procedure'] ?? [],
     );
   }
 

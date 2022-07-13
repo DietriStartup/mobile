@@ -1,4 +1,7 @@
+import 'package:dietri/components/show_bottom_modal_sheet.dart';
 import 'package:dietri/helper/enums.dart';
+import 'package:dietri/models/food.dart';
+import 'package:flutter/material.dart';
 
 class UserUtils {
   static Gender? intToGender(int? genderNumber) {
@@ -91,4 +94,23 @@ class UserUtils {
       return null;
     }
   }
+   static  Future<dynamic> dietriModalBSheet(BuildContext context, Food food, double height) {
+    return showModalBottomSheet(
+                                backgroundColor: Colors.transparent,
+                                context: context,
+                                useRootNavigator: true,
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(15),
+                                        topRight: Radius.circular(15))),
+                                isScrollControlled: true,
+                                isDismissible: true,
+                                builder: (BuildContext context) {
+                                  return ShowModalContent(
+                                      foodName: food.foodName,
+                                      foodIngredients: food.foodIngredients,
+                                      procedure: food.procedure,
+                                      height: height);
+                                });
+}
 }

@@ -13,7 +13,8 @@ abstract class Database {
   Future<void> updateUserWeight(
       String uid, Weight weight, String weightParam, bool isKYCComplete);
   Stream<UserModel?> userStream(String uid);
-  Stream<List<Food>> mealPlanStream(String uid);
+  Stream<List<Food>> userMealPlanStream(String uid);
+  Stream<List<Food>> mealPlanStream();
 }
 
 class FirestoreDb implements Database {
@@ -57,5 +58,16 @@ class FirestoreDb implements Database {
       builder: (data, docId) => UserModel.fromMap(data ?? {}));
 
   @override
-  Stream<List<Food>> mealPlanStream(String uid) => _firestoreService.collectionStream(path: APIPath.mealPlanPath(id: uid), builder: (data, docId) => Food.fromMap(data ?? {}));
+  Stream<List<Food>> userMealPlanStream(String uid) =>
+      _firestoreService.collectionStream(
+          path: APIPath.mealPlanPath(id: uid),
+          builder: (data, docId) {
+            print(data);
+            return Food.fromMap(data ?? {});
+          });
+
+  @override
+  Stream<List<Food>> mealPlanStream() => _firestoreService.collectionStream(path: 'mealplans', builder: (data, docId) => Food.fromMap(data!));
+
+  
 }

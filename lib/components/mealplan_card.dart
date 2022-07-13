@@ -12,13 +12,15 @@ class MealPlanCard extends StatelessWidget {
       required this.color1,
       required this.foodType,
       required this.foodIngredients,
-      required this.foodName})
+      required this.foodName,
+      required this.onPressed})
       : super(key: key);
   final Color color;
   final Color color1;
   final FoodType foodType;
   final String foodIngredients;
   final String foodName;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +119,7 @@ class MealPlanCard extends StatelessWidget {
                           width: 10,
                         ),
                         TextButton(
-                            onPressed: () {},
+                            onPressed: onPressed,
                             style: ElevatedButton.styleFrom(
                                 primary: kPrimaryColor,
                                 shape: RoundedRectangleBorder(

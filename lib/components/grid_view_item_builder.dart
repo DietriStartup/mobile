@@ -1,5 +1,6 @@
 import 'package:dietri/components/errorscreen.dart';
 import 'package:dietri/components/loading_screen.dart';
+import 'package:dietri/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'empty_content.dart';
 
@@ -29,12 +30,18 @@ class GridViewItemsBuilder<T> extends StatelessWidget {
     } else if (snapshot.hasError) {
       return const ErrorScreen();
     }
-    return const LoadingScreen();
+    return const Center(
+      child: CircularProgressIndicator(
+        backgroundColor: kPrimaryAccentColor,
+        color: kPrimaryColor,
+      ),
+    );
   }
 
   Widget _buildGridView(List items) {
     return GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10),
         physics: const BouncingScrollPhysics(),
         reverse: isReverse,
         itemCount: items.length,
