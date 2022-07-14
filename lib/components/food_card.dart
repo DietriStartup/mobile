@@ -22,7 +22,7 @@ class FoodCard extends StatelessWidget {
     return GestureDetector(
       onTap: showMealPlan,
       child: Container(
-        height: 100,
+        height: 120,
         width: 180,
         decoration: BoxDecoration(
             color: kPrimaryAccentColor,
@@ -31,37 +31,51 @@ class FoodCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Image.asset(
-              'assets/images/dietriBack.png',
-              fit: BoxFit.fitHeight,
-              height: 100,
-              width: 140,
+            ClipRRect(
+              borderRadius: const BorderRadius.all(Radius.circular(12)),
+              child: Image.asset(
+                'assets/images/dietriBack.png',
+                height: 110,
+                width: 140,
+                fit: BoxFit.fill,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    foodName,
-                    style: Fonts.montserratFont(
-                        color: kPrimaryColor,
-                        size: 13,
-                        fontWeight: FontWeight.normal),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 3.0),
+                    child: Text(
+                      foodName,
+                      style: Fonts.montserratFont(
+                          color: Colors.black,
+                          size: 13,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       GestureDetector(
-                          onTap: addNewMeal, child: Icon(Icons.add)),
+                          onTap: addNewMeal,
+                          child: Icon(
+                            Icons.add,
+                            size: 25,
+                          )),
                       SizedBox(
-                        width: 7,
+                        width: 3,
                       ),
                       GestureDetector(
                           onTap: saveMeal,
-                          child: Icon(isSavedMeal
-                              ? Icons.bookmark
-                              : Icons.bookmark_outline))
+                          child: Icon(
+                            isSavedMeal
+                                ? Icons.bookmark
+                                : Icons.bookmark_outline,
+                            size: 25,
+                            color: Colors.black,
+                          ))
                     ],
                   )
                 ],

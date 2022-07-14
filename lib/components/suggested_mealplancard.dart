@@ -10,11 +10,11 @@ class SuggestedMealPlanCard extends StatelessWidget {
       required this.color,
       required this.color1,
       required this.foodIngredients,
-      required this.foodName})
+      required this.foodName,required this.onPressed})
       : super(key: key);
   final Color color;
   final Color color1;
-
+  final VoidCallback onPressed;
   final String foodIngredients;
   final String foodName;
 
@@ -88,7 +88,7 @@ class SuggestedMealPlanCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         TextButton(
-                            onPressed: () {},
+                            onPressed: onPressed,
                             style: ElevatedButton.styleFrom(
                                 primary: kPrimaryColor,
                                 shape: RoundedRectangleBorder(

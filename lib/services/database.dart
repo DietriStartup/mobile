@@ -2,7 +2,6 @@ import 'package:dietri/helper/enums.dart';
 import 'package:dietri/helper/user_utils.dart';
 import 'package:dietri/models/food.dart';
 import 'package:dietri/models/user.dart';
-import 'package:dietri/models/user_saved_meal.dart';
 import 'package:dietri/services/api_path.dart';
 import 'package:dietri/services/firestore_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,11 +12,12 @@ abstract class Database {
   Future<void> updateUserGoals(String uid, Goals goal);
   Future<void> updateUserWeight(
       String uid, Weight weight, String weightParam, bool isKYCComplete);
-  Future<void> setUserSavedMeal(UserSavedMeal userSavedMeal, String uid);
+  Future<void> setUserSavedMeal(Food userSavedMeal, String uid);
+  Future<void> deleteSavedMeal(String foodId, String uid);
   Stream<UserModel?> userStream(String uid);
   Stream<List<Food>> userMealPlanStream(String uid);
   Stream<List<Food>> mealPlanStream();
-  Stream<List<UserSavedMeal>> userSavedMealStream(String uid);
+  Stream<List<Food>> userSavedMealStream(String uid);
   
 
 }
@@ -75,13 +75,16 @@ class FirestoreDb implements Database {
   Stream<List<Food>> mealPlanStream() => _firestoreService.collectionStream(path: 'mealplans', builder: (data, docId) => Food.fromMap(data!, docId));
 
   @override
-  Future<void> setUserSavedMeal(UserSavedMeal userSavedMeal, String uid) async {
+  Future<void> setUserSavedMeal(Food userSavedMeal, String uid) async {
     final data = userSavedMeal.toMap();
    return await _firestoreService.setData(path: APIPath.userSavedMeal(id: uid, docId: userSavedMeal.foodId), data: data); 
   }
 
   @override
-  Stream<List<UserSavedMeal>> userSavedMealStream(String uid) => _firestoreService.collectionStream(path: APIPath.userSavedMeals(id: uid), builder: (data, docId) => UserSavedMeal.fromMap(data, docId) );
+  Stream<List<Food>> userSavedMealStream(String uid) => _firestoreService.collectionStream(path: APIPath.userSavedMeals(id: uid), builder: (data, docId) => Food.fromMap(data, docId) );
+
+  @override
+  Future<void> deleteSavedMeal(String foodId, String uid) async => await _firestoreService.deleteData(path: APIPath.userSavedMeal(id: uid, docId: foodId));
 
 
 

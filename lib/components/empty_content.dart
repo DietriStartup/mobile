@@ -1,3 +1,4 @@
+import 'package:dietri/constants/fonts.dart';
 import 'package:flutter/material.dart';
 
 class EmptyContent extends StatelessWidget {
@@ -17,10 +18,11 @@ class EmptyContent extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(fontSize: 32, color: Colors.black54),
+            style: Fonts.montserratFont(
+                color: Colors.black, size: 24, fontWeight: FontWeight.w500),
           ),
-          Text(
-            message,
+          const Text(
+            '',
             style: TextStyle(fontSize: 16, color: Colors.black54),
           )
         ],

@@ -28,19 +28,7 @@ class Home extends StatelessWidget {
     final auth = Provider.of<AuthBase>(context);
     final height = MediaQuery.of(context).size.height;
 
-    List<Widget> _getfoodProcedure(List procedure) {
-      var textWidgets = <Text>[];
-      for (var i = 0; i < procedure.length; i++) {
-        textWidgets.add(Text('step${i + 1} : ${procedure[i]}'));
-      }
-      return textWidgets;
-    }
-
     return Scaffold(
-      // appBar: PreferredSize(
-      //   preferredSize: Size.fromHeight(150),
-      //   child: CustomAppBar(userModel: userModel, title: Container()),
-      // ),
       backgroundColor: Colors.grey[100],
       body: SafeArea(
         child: Padding(
@@ -48,7 +36,6 @@ class Home extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
-            //mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(
                 height: 10,
@@ -67,7 +54,6 @@ class Home extends StatelessWidget {
                         child: ClipRRect(
                           borderRadius:
                               const BorderRadius.all(Radius.circular(100)),
-                          // backgroundColor: Colors.transparent,
                           child: Image.network(
                             userModel.photoURL!,
                             height: 80,
@@ -186,6 +172,10 @@ class Home extends StatelessWidget {
                               foodIngredients: food.foodIngredients,
                               color: kPrimaryAccentColor,
                               color1: kPrimaryColor,
+                              onPressed: () {
+                                UserUtils.dietriModalBSheet(
+                                    context, food, height);
+                              },
                               foodName: food.foodName),
                           isReverse: false,
                           autoPlay: true,

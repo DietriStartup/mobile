@@ -26,7 +26,7 @@ class _SettingsPageState extends State<SettingsPage> {
           child: Column(
             children: [
               SizedBox(
-                height: 20,
+                height: 40,
               ),
               SettingHeader(title: 'Reminder'),
               SettingsCard(

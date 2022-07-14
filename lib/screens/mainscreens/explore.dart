@@ -4,14 +4,12 @@ import 'package:dietri/components/dietre_icons.dart';
 import 'package:dietri/components/errorscreen.dart';
 import 'package:dietri/components/food_card.dart';
 import 'package:dietri/components/grid_view_item_builder.dart';
-import 'package:dietri/components/input_field.dart';
 import 'package:dietri/constants/colors.dart';
 import 'package:dietri/constants/fonts.dart';
 import 'package:dietri/helper/enums.dart';
 import 'package:dietri/helper/user_utils.dart';
 import 'package:dietri/models/food.dart';
 import 'package:dietri/models/saved_meal_model.dart';
-import 'package:dietri/models/user_saved_meal.dart';
 import 'package:dietri/services/auth.dart';
 import 'package:dietri/services/database.dart';
 import 'package:dietri/view_models/explore_view_model.dart';
@@ -24,8 +22,8 @@ class ExplorePage extends StatefulWidget {
   static Widget create(BuildContext context) {
     final db = Provider.of<Database>(context, listen: false);
     final auth = Provider.of<AuthBase>(context, listen: false);
-    return Provider<ExploreViewModel>(
-      create: (_) => ExploreViewModel(db: db, auth: auth),
+    return Provider<SavedMealsViewModel>(
+      create: (_) => SavedMealsViewModel(db: db, auth: auth),
       child: const ExplorePage(),
     );
   }
@@ -35,19 +33,11 @@ class ExplorePage extends StatefulWidget {
 }
 
 class _ExplorePageState extends State<ExplorePage> {
-  List<Food> foodList = [];
+  List<SavedMeal> foodList = [];
   String query = "";
   String filterQuery = '';
   final TextEditingController _controller = TextEditingController();
   StreamSubscription? _streamSubscription;
-
-  List<Widget> _getfoodProcedure(List procedure) {
-    var textWidgets = <Text>[];
-    for (var i = 0; i < procedure.length; i++) {
-      textWidgets.add(Text('step${i + 1} : ${procedure[i]}'));
-    }
-    return textWidgets;
-  }
 
   FoodType? _foodType;
 
@@ -67,9 +57,9 @@ class _ExplorePageState extends State<ExplorePage> {
   @override
   void initState() {
     super.initState();
-    final db = Provider.of<Database>(context, listen: false);
+    final vm = Provider.of<SavedMealsViewModel>(context, listen: false);
 
-    _streamSubscription = db.mealPlanStream().listen((event) {
+    _streamSubscription = vm.savedMealsStream().listen((event) {
       setState(() {
         foodList = event;
       });
@@ -84,20 +74,20 @@ class _ExplorePageState extends State<ExplorePage> {
   }
 
   _buildSearchResults(String query, String filterQuery) {
-    List<Food> foodSuggestion = [];
+    List<SavedMeal> foodSuggestion = [];
     if (query.isNotEmpty && filterQuery.isNotEmpty) {
       foodSuggestion = foodList
           .where((element) {
-            String _getFoodType =
-                _getFoodTypeString(UserUtils.intToFoodType(element.foodType)!)
-                    .toLowerCase();
+            String _getFoodType = _getFoodTypeString(
+                    UserUtils.intToFoodType(element.food.foodType)!)
+                .toLowerCase();
             String _filterQuery = filterQuery.toLowerCase();
             bool matchesFilter = _getFoodType.contains(_filterQuery);
             return matchesFilter;
           })
           .toList()
           .where((element) {
-            String _getFoodName = element.foodName.toLowerCase();
+            String _getFoodName = element.food.foodName.toLowerCase();
             String _query = query.toLowerCase();
             bool matches = _getFoodName.contains(_query);
             return matches;
@@ -106,7 +96,7 @@ class _ExplorePageState extends State<ExplorePage> {
     } else if (filterQuery.isNotEmpty) {
       foodSuggestion = foodList.where((element) {
         String _getFoodType =
-            _getFoodTypeString(UserUtils.intToFoodType(element.foodType)!)
+            _getFoodTypeString(UserUtils.intToFoodType(element.food.foodType)!)
                 .toLowerCase();
         String _filterQuery = filterQuery.toLowerCase();
         bool matchesFilter = _getFoodType.contains(_filterQuery);
@@ -114,13 +104,13 @@ class _ExplorePageState extends State<ExplorePage> {
       }).toList();
     } else if (query.isNotEmpty) {
       foodSuggestion = foodList.where((element) {
-        String _getFoodName = element.foodName.toLowerCase();
+        String _getFoodName = element.food.foodName.toLowerCase();
         String _query = query.toLowerCase();
         bool matches = _getFoodName.contains(_query);
         return matches;
       }).toList();
     } else {
-      foodSuggestion = <Food>[];
+      foodSuggestion = <SavedMeal>[];
     }
 
     return foodSuggestion.isEmpty
@@ -136,24 +126,33 @@ class _ExplorePageState extends State<ExplorePage> {
               return FoodCard(
                   addNewMeal: () {},
                   saveMeal: () {},
-                  isSavedMeal: true,
+                  isSavedMeal: foodSuggestion[index].isSavedMeal ?? false,
                   showMealPlan: () {
-                    UserUtils.dietriModalBSheet(context, foodSuggestion[index],
+                    UserUtils.dietriModalBSheet(
+                        context,
+                        foodSuggestion[index].food,
                         MediaQuery.of(context).size.height);
                   },
-                  foodName: foodSuggestion[index].foodName,
-                  foodURL: foodSuggestion[index].foodName);
+                  foodName: foodSuggestion[index].food.foodName,
+                  foodURL: foodSuggestion[index].food.foodName);
             },
           );
   }
 
   void _toggleSavedMeal(
-      BuildContext context, bool isSavedMeal, String foodId) async {
+      BuildContext context, bool isSavedMeal, Food food) async {
     final db = Provider.of<Database>(context, listen: false);
     final auth = Provider.of<AuthBase>(context, listen: false);
     try {
       await db.setUserSavedMeal(
-          UserSavedMeal(foodId: foodId, isSavedMeal: !isSavedMeal),
+          Food(
+              foodName: food.foodName,
+              foodURL: food.foodURL,
+              foodId: food.foodId,
+              foodIngredients: food.foodIngredients,
+              foodType: food.foodType,
+              procedure: food.procedure,
+              isSavedMeal: !isSavedMeal),
           auth.currentUser!.uid);
     } catch (e) {
       debugPrint(e.toString());
@@ -162,150 +161,164 @@ class _ExplorePageState extends State<ExplorePage> {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<Database>(context, listen: false);
-    final vm = Provider.of<ExploreViewModel>(context, listen: false);
+    final vm = Provider.of<SavedMealsViewModel>(context, listen: false);
     FocusScopeNode currentFocus = FocusScope.of(context);
 
     return Scaffold(
         backgroundColor: Colors.white,
-        body: NestedScrollView(
-            floatHeaderSlivers: true,
-            headerSliverBuilder: (context, innerBoxScrolled) => [
-                  SliverAppBar(
-                    floating: true,
-                    centerTitle: false,
-                    backgroundColor: Colors.white,
-                    elevation: 0,
-                    title: Text('Explore',
-                        style: Fonts.montserratFont(
-                            color: kPrimaryColor,
-                            size: 20,
-                            fontWeight: FontWeight.bold)),
-                    bottom: PreferredSize(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10.0, vertical: 5),
-                          child: TextField(
-                            controller: _controller,
-                            onChanged: (val) {
-                              setState(() {
-                                query = val;
-                                //filterQuery = '';
-                              });
-                            },
-                            cursorColor: kPrimaryColor,
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 10),
-                              suffixIcon: IconButton(
-                                  onPressed: () {
-                                    if (query.isNotEmpty) {
-                                      setState(() {
-                                        query = '';
-                                      });
-                                      _controller.clear();
-                                    }
-                                  },
-                                  icon: Icon(
-                                    query.isNotEmpty
-                                        ? Icons.close
-                                        : Dietre.search_normal,
+        body: SafeArea(
+          child: NestedScrollView(
+              floatHeaderSlivers: true,
+              headerSliverBuilder: (context, innerBoxScrolled) => [
+                    SliverAppBar(
+                      floating: true,
+                      centerTitle: true,
+                      backgroundColor: Colors.white,
+                      elevation: 0,
+                      title: Padding(
+                        padding: const EdgeInsets.only(top: 15.0, bottom: 10),
+                        child: Text('Explore',
+                            style: Fonts.montserratFont(
+                                color: Colors.black,
+                                size: 24,
+                                fontWeight: FontWeight.bold)),
+                      ),
+                      bottom: PreferredSize(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10.0, vertical: 5),
+                            child: TextField(
+                              controller: _controller,
+                              onChanged: (val) {
+                                setState(() {
+                                  query = val;
+                                  //filterQuery = '';
+                                });
+                              },
+                              cursorColor: kPrimaryColor,
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
+                                suffixIcon: IconButton(
+                                    onPressed: () {
+                                      if (query.isNotEmpty) {
+                                        setState(() {
+                                          query = '';
+                                        });
+                                        _controller.clear();
+                                      }
+                                    },
+                                    icon: Icon(
+                                      query.isNotEmpty
+                                          ? Icons.close
+                                          : Dietre.search_normal,
+                                      color: kPrimaryColor,
+                                    )),
+                                disabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: const BorderSide(
                                     color: kPrimaryColor,
-                                  )),
-                              disabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: const BorderSide(
-                                  color: kPrimaryColor,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        preferredSize: const Size.fromHeight(40)),
-                  )
-                ],
-            body: GestureDetector(
-              onTap: () {
-                if (!currentFocus.hasPrimaryFocus) {
-                  currentFocus.unfocus();
-                }
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    filterQuery.isNotEmpty
-                        ? _filterQueryContainer()
-                        : TextButton(
-                            onPressed: () async {
-                              final foodType = await _filterDialog(context);
-                              if (foodType != false || foodType != null) {
-                                setState(() {
-                                  filterQuery = _getFoodTypeString(foodType!);
-                                });
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                                primary: kPrimaryAccentColor,
-                                minimumSize: const Size(50, 30)),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(
-                                  Icons.filter_alt_outlined,
-                                  color: Colors.black,
-                                ),
-                                const SizedBox(width: 10),
-                                Text('Filters',
-                                    style: Fonts.montserratFont(
-                                        color: Colors.black,
-                                        size: 14,
-                                        fontWeight: FontWeight.bold)),
-                              ],
-                            )),
-                    Expanded(
-                      flex: 5,
-                      child: query.isNotEmpty || filterQuery.isNotEmpty
-                          ? _buildSearchResults(query, filterQuery)
-                          : StreamBuilder<List<SavedMeal?>>(
-                              stream: vm.savedMealsStream(),
-                              builder: (context, snapshot) {
-                              
-                                return GridViewItemsBuilder<SavedMeal>(
-                                    snapshot: snapshot,
-                                    crossAxisCount: 2,
-                                    itemBuilder: (context, savedMeal) =>
-                                        FoodCard(
-                                            addNewMeal: () {},
-                                            saveMeal: () {
-                                              _toggleSavedMeal(
-                                                  context,
-                                                  savedMeal.isSavedMeal ?? false,
-                                                  savedMeal.food.foodId);
-                                            },
-                                            isSavedMeal: savedMeal.isSavedMeal ?? false,
-                                            showMealPlan: () {
-                                              UserUtils.dietriModalBSheet(
-                                                  context,
-                                                  savedMeal.food,
-                                                  MediaQuery.of(context)
-                                                      .size
-                                                      .height);
-                                            },
-                                            foodName: savedMeal.food.foodName,
-                                            foodURL: savedMeal.food.foodURL),
-                                    isReverse: false);
-                              },
-                            ),
-                    ),
+                          preferredSize: const Size.fromHeight(40)),
+                    )
                   ],
+              body: GestureDetector(
+                onTap: () {
+                  if (!currentFocus.hasPrimaryFocus) {
+                    currentFocus.unfocus();
+                  }
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      filterQuery.isNotEmpty
+                          ? Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: _filterQueryContainer(),
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: TextButton(
+                                  onPressed: () async {
+                                    final foodType =
+                                        await _filterDialog(context);
+                                    if (foodType != false || foodType != null) {
+                                      setState(() {
+                                        filterQuery =
+                                            _getFoodTypeString(foodType!);
+                                      });
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                      primary: kPrimaryAccentColor,
+                                      minimumSize: const Size(50, 30)),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(
+                                        Icons.filter_alt_outlined,
+                                        color: Colors.black,
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Text('Filters',
+                                          style: Fonts.montserratFont(
+                                              color: Colors.black,
+                                              size: 14,
+                                              fontWeight: FontWeight.bold)),
+                                    ],
+                                  )),
+                            ),
+                      Expanded(
+                        flex: 5,
+                        child: query.isNotEmpty || filterQuery.isNotEmpty
+                            ? _buildSearchResults(query, filterQuery)
+                            : StreamBuilder<List<SavedMeal?>>(
+                                stream: vm.savedMealsStream(),
+                                builder: (context, snapshot) {
+                                  return GridViewItemsBuilder<SavedMeal>(
+                                      snapshot: snapshot,
+                                      crossAxisCount: 2,
+                                      itemBuilder: (context, savedMeal) =>
+                                          FoodCard(
+                                              addNewMeal: () {},
+                                              saveMeal: () {
+                                                _toggleSavedMeal(
+                                                    context,
+                                                    savedMeal.isSavedMeal ??
+                                                        false,
+                                                    savedMeal.food);
+                                              },
+                                              isSavedMeal:
+                                                  savedMeal.isSavedMeal ??
+                                                      false,
+                                              showMealPlan: () {
+                                                UserUtils.dietriModalBSheet(
+                                                    context,
+                                                    savedMeal.food,
+                                                    MediaQuery.of(context)
+                                                        .size
+                                                        .height);
+                                              },
+                                              foodName: savedMeal.food.foodName,
+                                              foodURL: savedMeal.food.foodURL),
+                                      isReverse: false);
+                                },
+                              ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            )));
+              )),
+        ));
   }
 
   Future<dynamic> _filterDialog(BuildContext context) {
@@ -455,7 +468,7 @@ class _ExplorePageState extends State<ExplorePage> {
       decoration: BoxDecoration(
           color: kPrimaryAccentColor, borderRadius: BorderRadius.circular(6)),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.only(bottom: 3.0, left: 8),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
