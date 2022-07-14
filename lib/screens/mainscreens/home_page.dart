@@ -43,10 +43,8 @@ class _HomePageState extends State<HomePage> {
       TabItem.home: (_) => Home(
             userModel: widget.userModel,
           ),
-      TabItem.explore: (_) => const ExplorePage(),
-      TabItem.savedmeals: (_) => SavedMeals(
-            userModel: widget.userModel,
-          ),
+      TabItem.explore: (_) => ExplorePage.create(context),
+      TabItem.savedmeals: (_) => SavedMealsPage.create(context),
       TabItem.settings: (context) => const SettingsPage(),
       TabItem.profile: (_) => ProfilePage(userModel: widget.userModel)
     };

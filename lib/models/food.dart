@@ -4,6 +4,7 @@ class Food {
   Food(
       {required this.foodName,
       required this.foodURL, 
+      required this.foodId, 
       required this.foodIngredients,
       required this.foodType,
       required this.procedure,
@@ -12,6 +13,7 @@ class Food {
   final String foodIngredients;
   final String foodURL;
   final int foodType;
+  final String foodId;
   final List<dynamic> procedure;
 
 
@@ -26,8 +28,9 @@ class Food {
     };
   }
 
-  factory Food.fromMap(Map<String, dynamic> map) {
+  factory Food.fromMap(Map<String, dynamic> map, String docId) {
     return Food(
+    foodId : docId,
      foodName:   map['foodName'] ?? '',
      foodURL: map['foodURL'] ?? '',
      foodIngredients: map['foodIngredients'] ?? '',

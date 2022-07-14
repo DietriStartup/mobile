@@ -48,7 +48,6 @@ class MyApp extends StatelessWidget {
             onGenerateRoute: Routes.generateRoute,
             theme: ThemeData(
                 // canvasColor: Colors.w,
-                
                 dialogBackgroundColor: kPrimaryAccentColor,
                 primaryColor: kPrimaryColor,
                 inputDecorationTheme: InputDecorationTheme(

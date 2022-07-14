@@ -24,7 +24,7 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<Database>(context);
+    final db = Provider.of<Database>(context, listen: false);
     final auth = Provider.of<AuthBase>(context);
     final height = MediaQuery.of(context).size.height;
 
@@ -139,7 +139,8 @@ class Home extends StatelessWidget {
                         snapshot: snapshot,
                         itemBuilder: (context, food) => MealPlanCard(
                             onPressed: () {
-                              UserUtils.dietriModalBSheet(context, food, height);
+                              UserUtils.dietriModalBSheet(
+                                  context, food, height);
                             },
                             color: kWhiteColor,
                             color1: kPrimaryColor,
@@ -207,7 +208,4 @@ class Home extends StatelessWidget {
       ),
     );
   }
-
- 
-  }
-
+}

@@ -10,11 +10,13 @@ class GridViewItemsBuilder<T> extends StatelessWidget {
   const GridViewItemsBuilder(
       {Key? key,
       required this.snapshot,
+      required this.crossAxisCount,
       required this.itemBuilder,
       required this.isReverse})
       : super(key: key);
   final AsyncSnapshot<List> snapshot;
   final ItemWidgetBuilder<T> itemBuilder;
+  final int crossAxisCount;
 
   final bool isReverse;
 
@@ -22,7 +24,9 @@ class GridViewItemsBuilder<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     if (snapshot.hasData) {
       final List items = snapshot.data!;
+
       if (items.isNotEmpty) {
+        
         return _buildGridView(items);
       } else {
         return const EmptyContent();
@@ -40,11 +44,11 @@ class GridViewItemsBuilder<T> extends StatelessWidget {
 
   Widget _buildGridView(List items) {
     return GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount, mainAxisSpacing: 10, crossAxisSpacing: 10),
         physics: const BouncingScrollPhysics(),
         reverse: isReverse,
-        itemCount: items.length,
+        itemCount:  items.length,
         itemBuilder: (context, index) => itemBuilder(context, items[index]));
   }
 }

@@ -10,12 +10,25 @@ import 'package:dietri/constants/fonts.dart';
 import 'package:dietri/helper/enums.dart';
 import 'package:dietri/helper/user_utils.dart';
 import 'package:dietri/models/food.dart';
+import 'package:dietri/models/saved_meal_model.dart';
+import 'package:dietri/models/user_saved_meal.dart';
+import 'package:dietri/services/auth.dart';
 import 'package:dietri/services/database.dart';
+import 'package:dietri/view_models/explore_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ExplorePage extends StatefulWidget {
   const ExplorePage({Key? key}) : super(key: key);
+
+  static Widget create(BuildContext context) {
+    final db = Provider.of<Database>(context, listen: false);
+    final auth = Provider.of<AuthBase>(context, listen: false);
+    return Provider<ExploreViewModel>(
+      create: (_) => ExploreViewModel(db: db, auth: auth),
+      child: const ExplorePage(),
+    );
+  }
 
   @override
   State<ExplorePage> createState() => _ExplorePageState();
@@ -134,9 +147,23 @@ class _ExplorePageState extends State<ExplorePage> {
           );
   }
 
+  void _toggleSavedMeal(
+      BuildContext context, bool isSavedMeal, String foodId) async {
+    final db = Provider.of<Database>(context, listen: false);
+    final auth = Provider.of<AuthBase>(context, listen: false);
+    try {
+      await db.setUserSavedMeal(
+          UserSavedMeal(foodId: foodId, isSavedMeal: !isSavedMeal),
+          auth.currentUser!.uid);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<Database>(context);
+    final db = Provider.of<Database>(context, listen: false);
+    final vm = Provider.of<ExploreViewModel>(context, listen: false);
     FocusScopeNode currentFocus = FocusScope.of(context);
 
     return Scaffold(
@@ -146,14 +173,14 @@ class _ExplorePageState extends State<ExplorePage> {
             headerSliverBuilder: (context, innerBoxScrolled) => [
                   SliverAppBar(
                     floating: true,
-                    centerTitle: true,
+                    centerTitle: false,
                     backgroundColor: Colors.white,
                     elevation: 0,
                     title: Text('Explore',
                         style: Fonts.montserratFont(
                             color: kPrimaryColor,
-                            size: 18,
-                            fontWeight: FontWeight.w500)),
+                            size: 20,
+                            fontWeight: FontWeight.bold)),
                     bottom: PreferredSize(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
@@ -244,25 +271,33 @@ class _ExplorePageState extends State<ExplorePage> {
                       flex: 5,
                       child: query.isNotEmpty || filterQuery.isNotEmpty
                           ? _buildSearchResults(query, filterQuery)
-                          : StreamBuilder<List<Food>>(
-                              stream: db.mealPlanStream(),
+                          : StreamBuilder<List<SavedMeal?>>(
+                              stream: vm.savedMealsStream(),
                               builder: (context, snapshot) {
-                                return GridViewItemsBuilder<Food>(
+                              
+                                return GridViewItemsBuilder<SavedMeal>(
                                     snapshot: snapshot,
-                                    itemBuilder: (context, food) => FoodCard(
-                                        addNewMeal: () {},
-                                        saveMeal: () {},
-                                        isSavedMeal: true,
-                                        showMealPlan: () {
-                                          UserUtils.dietriModalBSheet(
-                                              context,
-                                              food,
-                                              MediaQuery.of(context)
-                                                  .size
-                                                  .height);
-                                        },
-                                        foodName: food.foodName,
-                                        foodURL: food.foodURL),
+                                    crossAxisCount: 2,
+                                    itemBuilder: (context, savedMeal) =>
+                                        FoodCard(
+                                            addNewMeal: () {},
+                                            saveMeal: () {
+                                              _toggleSavedMeal(
+                                                  context,
+                                                  savedMeal.isSavedMeal ?? false,
+                                                  savedMeal.food.foodId);
+                                            },
+                                            isSavedMeal: savedMeal.isSavedMeal ?? false,
+                                            showMealPlan: () {
+                                              UserUtils.dietriModalBSheet(
+                                                  context,
+                                                  savedMeal.food,
+                                                  MediaQuery.of(context)
+                                                      .size
+                                                      .height);
+                                            },
+                                            foodName: savedMeal.food.foodName,
+                                            foodURL: savedMeal.food.foodURL),
                                     isReverse: false);
                               },
                             ),
