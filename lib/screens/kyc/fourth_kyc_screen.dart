@@ -39,6 +39,24 @@ class FourthKYCScreen extends StatelessWidget {
               style: Fonts.montserratFont(
                   color: kPrimaryColor, size: 32, fontWeight: FontWeight.w400),
               decoration: InputDecoration(
+                  enabledBorder:  const OutlineInputBorder(
+                  
+                    borderSide:  BorderSide(
+                      color: kPrimaryColor,
+                    ),
+                  ),
+                  focusedBorder:const OutlineInputBorder(
+                    
+                    borderSide:  BorderSide(
+                      color: kPrimaryColor,
+                    ),
+                  ),
+                  disabledBorder: const OutlineInputBorder(
+                   
+                    borderSide:  BorderSide(
+                      color: kPrimaryColor,
+                    ),
+                  ),
                 suffixIcon: Padding(
                   padding: const EdgeInsets.only(top: 18.0),
                   child: Text(

@@ -154,6 +154,9 @@ class _ExplorePageState extends State<ExplorePage> {
               procedure: food.procedure,
               isSavedMeal: !isSavedMeal),
           auth.currentUser!.uid);
+      if (isSavedMeal == true) {
+        await db.deleteSavedMeal(food.foodId, auth.currentUser!.uid);
+      }
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -214,6 +217,18 @@ class _ExplorePageState extends State<ExplorePage> {
                                           : Dietre.search_normal,
                                       color: kPrimaryColor,
                                     )),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: const BorderSide(
+                                    color: kPrimaryColor,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: const BorderSide(
+                                    color: kPrimaryColor,
+                                  ),
+                                ),
                                 disabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide: const BorderSide(

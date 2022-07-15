@@ -54,8 +54,9 @@ class Home extends StatelessWidget {
                         child: ClipRRect(
                           borderRadius:
                               const BorderRadius.all(Radius.circular(100)),
-                          child: Image.network(
-                            userModel.photoURL!,
+                          child: 
+                          Image.network(
+                            userModel.photoURL!.isEmpty || userModel.photoURL == null ? 'https://www.freeiconspng.com/images/profile-icon-png' : userModel.photoURL!,
                             height: 80,
                             fit: BoxFit.fill,
                             width: 80,

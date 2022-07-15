@@ -57,24 +57,7 @@ class MyApp extends StatelessWidget {
                       color: kPrimaryColor,
                     ),
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(
-                      color: kPrimaryColor,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(
-                      color: kPrimaryColor,
-                    ),
-                  ),
-                  disabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(
-                      color: kPrimaryColor,
-                    ),
-                  ),
+                
                 )),
             debugShowCheckedModeBanner: false,
             home: const LandingPage(),

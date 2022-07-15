@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dietri/components/dietre_icons.dart';
+import 'package:dietri/components/empty_content.dart';
 import 'package:dietri/components/errorscreen.dart';
 import 'package:dietri/components/food_card.dart';
 import 'package:dietri/components/grid_view_item_builder.dart';
