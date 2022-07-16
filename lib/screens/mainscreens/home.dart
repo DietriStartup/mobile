@@ -54,9 +54,11 @@ class Home extends StatelessWidget {
                         child: ClipRRect(
                           borderRadius:
                               const BorderRadius.all(Radius.circular(100)),
-                          child: 
-                          Image.network(
-                            userModel.photoURL!.isEmpty || userModel.photoURL == null ? 'https://www.freeiconspng.com/images/profile-icon-png' : userModel.photoURL!,
+                          child: Image.network(
+                            userModel.photoURL!.isEmpty ||
+                                    userModel.photoURL == null
+                                ? kDefaultProfilePhoto
+                                : userModel.photoURL!,
                             height: 80,
                             fit: BoxFit.fill,
                             width: 80,
@@ -117,30 +119,33 @@ class Home extends StatelessWidget {
                 ),
               ),
 
-              SizedBox(
-                height: sizer(false, 250, context),
-                child: StreamBuilder<List<Food>>(
-                  stream: db.userMealPlanStream(auth.currentUser!.uid),
-                  builder: (context, snapshot) {
-                    return SwiperViewItemsBuilder<Food>(
-                        snapshot: snapshot,
-                        itemBuilder: (context, food) => MealPlanCard(
-                            onPressed: () {
-                              UserUtils.dietriModalBSheet(
-                                  context, food, height);
-                            },
-                            color: kWhiteColor,
-                            color1: kPrimaryColor,
-                            foodType: UserUtils.intToFoodType(food.foodType)!,
-                            foodIngredients: food.foodIngredients,
-                            foodName: food.foodName),
-                        isReverse: false,
-                        layout: SwiperLayout.TINDER,
-                        autoPlay: false,
-                        viewPortFraction: 1,
-                        itemHeight: 250,
-                        itemWidth: 450);
-                  },
+              Center(
+                child: SizedBox(
+                  height: sizer(false, 250, context),
+                  width: sizer(true, 470, context),
+                  child: StreamBuilder<List<Food>>(
+                    stream: db.userMealPlanStream(auth.currentUser!.uid),
+                    builder: (context, snapshot) {
+                      return SwiperViewItemsBuilder<Food>(
+                          snapshot: snapshot,
+                          itemBuilder: (context, food) => MealPlanCard(
+                              onPressed: () {
+                                UserUtils.dietriModalBSheet(
+                                    context, food, height);
+                              },
+                              color: kWhiteColor,
+                              color1: kPrimaryColor,
+                              foodType: UserUtils.intToFoodType(food.foodType)!,
+                              foodIngredients: food.foodIngredients,
+                              foodName: food.foodName),
+                          isReverse: false,
+                          layout: SwiperLayout.TINDER,
+                          autoPlay: false,
+                          viewPortFraction: 1,
+                          itemHeight: 250,
+                          itemWidth: 450);
+                    },
+                  ),
                 ),
               ),
               const SizedBox(
@@ -165,7 +170,7 @@ class Home extends StatelessWidget {
                   height: sizer(false, 230, context),
                   width: sizer(true, 470, context),
                   child: StreamBuilder<List<Food>>(
-                    stream: db.userMealPlanStream(auth.currentUser!.uid),
+                    stream: db.mealPlanStream(),
                     builder: (context, snapshot) {
                       return SwiperViewItemsBuilder<Food>(
                           snapshot: snapshot,

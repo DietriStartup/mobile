@@ -12,3 +12,5 @@ const Color kDefaultGrey = Color(0xff686B6F);
 const Color kLightGrey = Color(0xffD4D4D4);
 const Color kListGrey = Color(0xffEAEAEA);
 const Color kGreen = Color(0xff56C568);
+
+const String kDefaultProfilePhoto ='https://firebasestorage.googleapis.com/v0/b/dietri-3c59b.appspot.com/o/blank-profile-picture-gd4baa0e07_1280.png?alt=media&token=21c40af5-18df-4109-a815-4bed34cd2bc4';

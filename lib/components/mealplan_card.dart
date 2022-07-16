@@ -38,7 +38,7 @@ class MealPlanCard extends StatelessWidget {
     }
 
     return Container(
-      width: sizer(true, 450, context),
+      width: sizer(true, 360, context),
       decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(12),

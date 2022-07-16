@@ -170,7 +170,9 @@ class ProfilePage extends StatelessWidget {
               borderRadius: const BorderRadius.all(Radius.circular(100)),
               // backgroundColor: Colors.transparent,
               child: Image.network(
-                userModel.photoURL!,
+                userModel.photoURL!.isEmpty || userModel.photoURL == null
+                    ? kDefaultProfilePhoto
+                    : userModel.photoURL!,
                 height: 160,
                 fit: BoxFit.fill,
                 width: 160,

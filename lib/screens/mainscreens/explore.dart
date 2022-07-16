@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dietri/components/dietre_icons.dart';
 import 'package:dietri/components/errorscreen.dart';
 import 'package:dietri/components/food_card.dart';
 import 'package:dietri/components/grid_view_item_builder.dart';
+import 'package:dietri/components/show_exception_dialog.dart';
 import 'package:dietri/constants/colors.dart';
 import 'package:dietri/constants/fonts.dart';
 import 'package:dietri/helper/enums.dart';
@@ -41,19 +43,6 @@ class _ExplorePageState extends State<ExplorePage> {
 
   FoodType? _foodType;
 
-  String _getFoodTypeString(FoodType foodType) {
-    switch (foodType) {
-      case FoodType.breakfast:
-        return 'Breakfast';
-      case FoodType.lunch:
-        return 'Lunch';
-      case FoodType.dinner:
-        return 'Dinner';
-      default:
-        return '';
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -78,7 +67,7 @@ class _ExplorePageState extends State<ExplorePage> {
     if (query.isNotEmpty && filterQuery.isNotEmpty) {
       foodSuggestion = foodList
           .where((element) {
-            String _getFoodType = _getFoodTypeString(
+            String _getFoodType = UserUtils.getFoodTypeString(
                     UserUtils.intToFoodType(element.food.foodType)!)
                 .toLowerCase();
             String _filterQuery = filterQuery.toLowerCase();
@@ -95,9 +84,9 @@ class _ExplorePageState extends State<ExplorePage> {
           .toList();
     } else if (filterQuery.isNotEmpty) {
       foodSuggestion = foodList.where((element) {
-        String _getFoodType =
-            _getFoodTypeString(UserUtils.intToFoodType(element.food.foodType)!)
-                .toLowerCase();
+        String _getFoodType = UserUtils.getFoodTypeString(
+                UserUtils.intToFoodType(element.food.foodType)!)
+            .toLowerCase();
         String _filterQuery = filterQuery.toLowerCase();
         bool matchesFilter = _getFoodType.contains(_filterQuery);
         return matchesFilter;
@@ -157,8 +146,23 @@ class _ExplorePageState extends State<ExplorePage> {
       if (isSavedMeal == true) {
         await db.deleteSavedMeal(food.foodId, auth.currentUser!.uid);
       }
-    } catch (e) {
+    } on FirebaseException catch (e) {
       debugPrint(e.toString());
+      showExceptionAlertDialog(context,
+          title: 'Could\'nt save meal', exception: e);
+    }
+  }
+
+  void _addNewMeal(BuildContext context, Food food, String foodTypeString,
+      FoodType foodType) async {
+    final db = Provider.of<Database>(context, listen: false);
+    final auth = Provider.of<AuthBase>(context, listen: false);
+    try {
+      await db.addNewMealPlan(
+          food, auth.currentUser!.uid, foodTypeString, foodType);
+    } on FirebaseException catch (e) {
+      showExceptionAlertDialog(context,
+          title: 'Could\'nt add meal', exception: e);
     }
   }
 
@@ -266,10 +270,11 @@ class _ExplorePageState extends State<ExplorePage> {
                                   onPressed: () async {
                                     final foodType =
                                         await _filterDialog(context);
-                                    if (foodType != false || foodType != null) {
+                                    if (foodType != null) {
                                       setState(() {
                                         filterQuery =
-                                            _getFoodTypeString(foodType!);
+                                            UserUtils.getFoodTypeString(
+                                                foodType!);
                                       });
                                     }
                                   },
@@ -304,7 +309,22 @@ class _ExplorePageState extends State<ExplorePage> {
                                       crossAxisCount: 2,
                                       itemBuilder: (context, savedMeal) =>
                                           FoodCard(
-                                              addNewMeal: () {},
+                                              addNewMeal: () async {
+                                                final foodType =
+                                                    await _addNewMealPlanDialog(
+                                                        context,
+                                                        savedMeal.food);
+                                                if (foodType != null) {
+                                                  _addNewMeal(
+                                                      context,
+                                                      savedMeal.food,
+                                                      UserUtils
+                                                              .getFoodTypeString(
+                                                                  foodType)
+                                                          .toLowerCase(),
+                                                      foodType);
+                                                }
+                                              },
                                               saveMeal: () {
                                                 _toggleSavedMeal(
                                                     context,
@@ -463,6 +483,147 @@ class _ExplorePageState extends State<ExplorePage> {
                                 primary: kPrimaryColor,
                                 minimumSize: const Size(50, 30)),
                             child: Text('Save',
+                                style: Fonts.montserratFont(
+                                    color: Colors.white,
+                                    size: 16,
+                                    fontWeight: FontWeight.normal))),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            );
+          });
+        });
+  }
+
+  Future<dynamic> _addNewMealPlanDialog(BuildContext context, Food food) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)),
+              backgroundColor: kPrimaryAccentColor,
+              child: SizedBox(
+                //height: 300,
+                width: 235,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0, vertical: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            food.foodName,
+                            style: Fonts.montserratFont(
+                                color: Colors.black,
+                                size: 16,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Icon(Icons.close))
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Choose as..',
+                          style: Fonts.montserratFont(
+                              color: Colors.black,
+                              size: 14,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Radio(
+                            value: FoodType.breakfast,
+                            groupValue: _foodType,
+                            onChanged: (FoodType? val) {
+                              setState(() {
+                                _foodType = val!;
+                              });
+                            },
+                            activeColor: kPrimaryColor,
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            'Breakfast',
+                            style: Fonts.montserratFont(
+                                color: Colors.black,
+                                size: 12,
+                                fontWeight: FontWeight.normal),
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Radio(
+                            value: FoodType.lunch,
+                            groupValue: _foodType,
+                            onChanged: (FoodType? val) {
+                              setState(() {
+                                _foodType = val!;
+                              });
+                            },
+                            activeColor: kPrimaryColor,
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            'Lunch',
+                            style: Fonts.montserratFont(
+                                color: Colors.black,
+                                size: 12,
+                                fontWeight: FontWeight.normal),
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Radio(
+                            value: FoodType.dinner,
+                            groupValue: _foodType,
+                            onChanged: (FoodType? val) {
+                              setState(() {
+                                _foodType = val!;
+                              });
+                            },
+                            activeColor: kPrimaryColor,
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            'Dinner',
+                            style: Fonts.montserratFont(
+                                color: Colors.black,
+                                size: 12,
+                                fontWeight: FontWeight.normal),
+                          )
+                        ],
+                      ),
+                      Center(
+                        child: TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(_foodType);
+                            },
+                            style: ElevatedButton.styleFrom(
+                                primary: kPrimaryColor,
+                                minimumSize: const Size(50, 30)),
+                            child: Text('Add',
                                 style: Fonts.montserratFont(
                                     color: Colors.white,
                                     size: 16,

@@ -1,12 +1,15 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dietri/components/dietre_icons.dart';
 import 'package:dietri/components/empty_content.dart';
 import 'package:dietri/components/errorscreen.dart';
 import 'package:dietri/components/food_card.dart';
 import 'package:dietri/components/grid_view_item_builder.dart';
+import 'package:dietri/components/show_exception_dialog.dart';
 import 'package:dietri/constants/colors.dart';
 import 'package:dietri/constants/fonts.dart';
+import 'package:dietri/helper/enums.dart';
 import 'package:dietri/helper/user_utils.dart';
 import 'package:dietri/models/food.dart';
 import 'package:dietri/services/auth.dart';
@@ -36,6 +39,7 @@ class _SavedMealsPageState extends State<SavedMealsPage> {
   String query = "";
   final TextEditingController _controller = TextEditingController();
   StreamSubscription? _streamSubscription;
+  FoodType? _foodType;
 
   @override
   void initState() {
@@ -98,6 +102,19 @@ class _SavedMealsPageState extends State<SavedMealsPage> {
                   foodURL: foodSuggestion[index].foodName);
             },
           );
+  }
+
+  void _addNewMeal(BuildContext context, Food food, String foodTypeString,
+      FoodType foodType) async {
+    final db = Provider.of<Database>(context, listen: false);
+    final auth = Provider.of<AuthBase>(context, listen: false);
+    try {
+      await db.addNewMealPlan(
+          food, auth.currentUser!.uid, foodTypeString, foodType);
+    } on FirebaseException catch (e) {
+      showExceptionAlertDialog(context,
+          title: 'Could\'nt add meal', exception: e);
+    }
   }
 
   @override
@@ -191,7 +208,20 @@ class _SavedMealsPageState extends State<SavedMealsPage> {
                                   snapshot: snapshot,
                                   crossAxisCount: 2,
                                   itemBuilder: (context, savedMeal) => FoodCard(
-                                      addNewMeal: () {},
+                                      addNewMeal: () async {
+                                        final foodType =
+                                            await _addNewMealPlanDialog(
+                                                context, savedMeal);
+                                        if (foodType != null) {
+                                          _addNewMeal(
+                                              context,
+                                              savedMeal,
+                                              UserUtils.getFoodTypeString(
+                                                      foodType)
+                                                  .toLowerCase(),
+                                              foodType);
+                                        }
+                                      },
                                       saveMeal: () {
                                         _deleteSavedMeal(
                                             context,
@@ -217,6 +247,147 @@ class _SavedMealsPageState extends State<SavedMealsPage> {
             ),
           ),
         ));
+  }
+
+  Future<dynamic> _addNewMealPlanDialog(BuildContext context, Food food) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)),
+              backgroundColor: kPrimaryAccentColor,
+              child: SizedBox(
+                //height: 300,
+                width: 235,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0, vertical: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            food.foodName,
+                            style: Fonts.montserratFont(
+                                color: Colors.black,
+                                size: 16,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Icon(Icons.close))
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Choose as..',
+                          style: Fonts.montserratFont(
+                              color: Colors.black,
+                              size: 14,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Radio(
+                            value: FoodType.breakfast,
+                            groupValue: _foodType,
+                            onChanged: (FoodType? val) {
+                              setState(() {
+                                _foodType = val!;
+                              });
+                            },
+                            activeColor: kPrimaryColor,
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            'Breakfast',
+                            style: Fonts.montserratFont(
+                                color: Colors.black,
+                                size: 12,
+                                fontWeight: FontWeight.normal),
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Radio(
+                            value: FoodType.lunch,
+                            groupValue: _foodType,
+                            onChanged: (FoodType? val) {
+                              setState(() {
+                                _foodType = val!;
+                              });
+                            },
+                            activeColor: kPrimaryColor,
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            'Lunch',
+                            style: Fonts.montserratFont(
+                                color: Colors.black,
+                                size: 12,
+                                fontWeight: FontWeight.normal),
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Radio(
+                            value: FoodType.dinner,
+                            groupValue: _foodType,
+                            onChanged: (FoodType? val) {
+                              setState(() {
+                                _foodType = val!;
+                              });
+                            },
+                            activeColor: kPrimaryColor,
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            'Dinner',
+                            style: Fonts.montserratFont(
+                                color: Colors.black,
+                                size: 12,
+                                fontWeight: FontWeight.normal),
+                          )
+                        ],
+                      ),
+                      Center(
+                        child: TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(_foodType);
+                            },
+                            style: ElevatedButton.styleFrom(
+                                primary: kPrimaryColor,
+                                minimumSize: const Size(50, 30)),
+                            child: Text('Add',
+                                style: Fonts.montserratFont(
+                                    color: Colors.white,
+                                    size: 16,
+                                    fontWeight: FontWeight.normal))),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            );
+          });
+        });
   }
 
   void _deleteSavedMeal(

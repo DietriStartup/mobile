@@ -69,6 +69,21 @@ class UserUtils {
     }
   }
 
+   static String getFoodTypeString(FoodType foodType) {
+    switch (foodType) {
+      case FoodType.breakfast:
+        return 'Breakfast';
+      case FoodType.lunch:
+        return 'Lunch';
+      case FoodType.dinner:
+        return 'Dinner';
+      default:
+        return '';
+    }
+  }
+
+  
+
   static int? foodTypetoInt(FoodType? foodType){
     switch (foodType) {
       case FoodType.breakfast:

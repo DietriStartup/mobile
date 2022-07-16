@@ -13,7 +13,7 @@ class Food {
   final String foodName;
   final String foodIngredients;
   final String foodURL;
-  final int foodType;
+  int foodType;
   final String foodId;
   final bool? isSavedMeal;
   final List<dynamic> procedure;

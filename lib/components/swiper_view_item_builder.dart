@@ -66,8 +66,10 @@ class SwiperViewItemsBuilder<T> extends StatelessWidget {
         outer: true,
         autoplay: autoPlay,
         pagination: pagination,
+        axisDirection: AxisDirection.right,
         viewportFraction: viewPortFraction,
         scale: scale,
+        loop: false,
         itemBuilder: (context, index) => itemBuilder(context, items[index]));
   }
 }

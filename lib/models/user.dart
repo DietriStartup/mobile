@@ -1,3 +1,4 @@
+import 'package:dietri/constants/colors.dart';
 import 'package:dietri/helper/enums.dart';
 import 'package:dietri/helper/user_utils.dart';
 import 'package:dietri/models/food.dart';
@@ -40,7 +41,7 @@ class UserModel {
     return UserModel(
       name: map['name'] ?? '',
       email: map['email'] ?? '',
-      photoURL: map['photoURL'] ?? '',
+      photoURL: map['photoURL'] ?? kDefaultProfilePhoto,
       isKYCComplete: map['isKYCComplete'] ?? false,
       gender: UserUtils.intToGender(map['gender']) ?? Gender.others,
       goal: UserUtils.intToGoal(map['goal']) ?? Goals.maintainweight,
