@@ -95,12 +95,13 @@ class SignInPageViewModel with EmailAndPasswordValidators, ChangeNotifier {
   Future<void> signInWithGoogle() async {
     updateWith(isLoading: true);
     try {
-      await auth.signInWithGoogle();
-      final user = await auth.signInWithGoogle();
+      await auth.signInWithGoogle().then((user) {
+        if (user!.additionalUserInfo!.isNewUser) {
+          db.createUserinDatabase(user.user!);
+        }
+      });
       //db.createUserinDatabase(user!.user!);
-      if (user!.additionalUserInfo!.isNewUser) {
-        db.createUserinDatabase(user.user!);
-      }
+
     } catch (e) {
       updateWith(isLoading: false);
       rethrow;

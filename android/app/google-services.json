@@ -14,6 +14,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "962761381504-6nsr1857t0lvjnn3ue9312hm6rms9bmt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.dietri",
+            "certificate_hash": "3f84cce2f34ba327cf57736ece5b8a356e2448d8"
+          }
+        },
+        {
+          "client_id": "962761381504-imn94g5shkl4ogsqbmbkjsr9mskdbom7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.dietri",
+            "certificate_hash": "27976b900d4feeda586a9d7adf72cd3add05ad01"
+          }
+        },
+        {
           "client_id": "962761381504-j5r19d0jvjoljtp6fj01fsn20r338f4s.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
