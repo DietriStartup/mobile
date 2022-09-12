@@ -27,7 +27,7 @@ void main() async {
   runApp(const MyApp());
 }
 
-getonBoardingStatus() {}
+
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
