@@ -19,14 +19,19 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ExplorePage extends StatefulWidget {
-  const ExplorePage({Key? key}) : super(key: key);
+  const ExplorePage({Key? key, required this.vm}) : super(key: key);
+  final ExploreViewModel vm;
 
   static Widget create(BuildContext context) {
     final db = Provider.of<Database>(context, listen: false);
     final auth = Provider.of<AuthBase>(context, listen: false);
-    return Provider<SavedMealsViewModel>(
-      create: (_) => SavedMealsViewModel(db: db, auth: auth),
-      child: const ExplorePage(),
+    return ChangeNotifierProvider<ExploreViewModel>(
+      create: (_) => ExploreViewModel(db: db, auth: auth),
+      child: Consumer<ExploreViewModel>(
+        builder: (_, model, __) => ExplorePage(
+          vm: model,
+        ),
+      ),
     );
   }
 
@@ -35,74 +40,27 @@ class ExplorePage extends StatefulWidget {
 }
 
 class _ExplorePageState extends State<ExplorePage> {
-  List<SavedMeal> foodList = [];
-  String query = "";
-  String filterQuery = '';
   final TextEditingController _controller = TextEditingController();
-  StreamSubscription? _streamSubscription;
 
-  FoodType? _foodType;
+  ExploreViewModel get vm => widget.vm;
 
   @override
   void initState() {
     super.initState();
-    final vm = Provider.of<SavedMealsViewModel>(context, listen: false);
 
-    _streamSubscription = vm.savedMealsStream().listen((event) {
-      setState(() {
-        foodList = event;
-      });
-    });
+    vm.updateFoodList();
   }
 
   @override
   void dispose() {
-    _streamSubscription!.cancel();
+    vm.closeStream();
     _controller.dispose();
     super.dispose();
   }
 
-  _buildSearchResults(String query, String filterQuery) {
-    List<SavedMeal> foodSuggestion = [];
-    if (query.isNotEmpty && filterQuery.isNotEmpty) {
-      foodSuggestion = foodList
-          .where((element) {
-            String _getFoodType = UserUtils.getFoodTypeString(
-                    UserUtils.intToFoodType(element.food.foodType)!)
-                .toLowerCase();
-            String _filterQuery = filterQuery.toLowerCase();
-            bool matchesFilter = _getFoodType.contains(_filterQuery);
-            return matchesFilter;
-          })
-          .toList()
-          .where((element) {
-            String _getFoodName = element.food.foodName.toLowerCase();
-            String _query = query.toLowerCase();
-            bool matches = _getFoodName.contains(_query);
-            return matches;
-          })
-          .toList();
-    } else if (filterQuery.isNotEmpty) {
-      foodSuggestion = foodList.where((element) {
-        String _getFoodType = UserUtils.getFoodTypeString(
-                UserUtils.intToFoodType(element.food.foodType)!)
-            .toLowerCase();
-        String _filterQuery = filterQuery.toLowerCase();
-        bool matchesFilter = _getFoodType.contains(_filterQuery);
-        return matchesFilter;
-      }).toList();
-    } else if (query.isNotEmpty) {
-      foodSuggestion = foodList.where((element) {
-        String _getFoodName = element.food.foodName.toLowerCase();
-        String _query = query.toLowerCase();
-        bool matches = _getFoodName.contains(_query);
-        return matches;
-      }).toList();
-    } else {
-      foodSuggestion = <SavedMeal>[];
-    }
-
-    return foodSuggestion.isEmpty
+  _buildSearchResults() {
+    vm.getFoodSearchResults();
+    return vm.foodSuggestion.isEmpty
         ? const ErrorScreen(
             title: 'No results for that search..',
           )
@@ -110,44 +68,29 @@ class _ExplorePageState extends State<ExplorePage> {
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10),
             physics: const BouncingScrollPhysics(),
-            itemCount: foodSuggestion.length,
+            itemCount: vm.foodSuggestion.length,
             itemBuilder: (context, index) {
               return FoodCard(
                   addNewMeal: () {},
                   saveMeal: () {},
-                  isSavedMeal: foodSuggestion[index].isSavedMeal ?? false,
+                  isSavedMeal: vm.foodSuggestion[index].isSavedMeal ?? false,
                   showMealPlan: () {
                     UserUtils.dietriModalBSheet(
                         context,
-                        foodSuggestion[index].food,
+                        vm.foodSuggestion[index].food,
                         MediaQuery.of(context).size.height);
                   },
-                  foodName: foodSuggestion[index].food.foodName,
-                  foodURL: foodSuggestion[index].food.foodName);
+                  foodName: vm.foodSuggestion[index].food.foodName,
+                  foodURL: vm.foodSuggestion[index].food.foodName);
             },
           );
   }
 
   void _toggleSavedMeal(
       BuildContext context, bool isSavedMeal, Food food) async {
-    final db = Provider.of<Database>(context, listen: false);
-    final auth = Provider.of<AuthBase>(context, listen: false);
     try {
-      await db.setUserSavedMeal(
-          Food(
-              foodName: food.foodName,
-              foodURL: food.foodURL,
-              foodId: food.foodId,
-              foodIngredients: food.foodIngredients,
-              foodType: food.foodType,
-              procedure: food.procedure,
-              isSavedMeal: !isSavedMeal),
-          auth.currentUser!.uid);
-      if (isSavedMeal == true) {
-        await db.deleteSavedMeal(food.foodId, auth.currentUser!.uid);
-      }
+      await vm.toggleSavedMeal(food, isSavedMeal);
     } on FirebaseException catch (e) {
-      debugPrint(e.toString());
       showExceptionAlertDialog(context,
           title: 'Could\'nt save meal', exception: e);
     }
@@ -155,11 +98,8 @@ class _ExplorePageState extends State<ExplorePage> {
 
   void _addNewMeal(BuildContext context, Food food, String foodTypeString,
       FoodType foodType) async {
-    final db = Provider.of<Database>(context, listen: false);
-    final auth = Provider.of<AuthBase>(context, listen: false);
     try {
-      await db.addNewMealPlan(
-          food, auth.currentUser!.uid, foodTypeString, foodType);
+      await vm.addNewMeal(food, foodTypeString, foodType);
     } on FirebaseException catch (e) {
       showExceptionAlertDialog(context,
           title: 'Could\'nt add meal', exception: e);
@@ -168,7 +108,6 @@ class _ExplorePageState extends State<ExplorePage> {
 
   @override
   Widget build(BuildContext context) {
-    final vm = Provider.of<SavedMealsViewModel>(context, listen: false);
     FocusScopeNode currentFocus = FocusScope.of(context);
 
     return Scaffold(
@@ -196,27 +135,20 @@ class _ExplorePageState extends State<ExplorePage> {
                                 horizontal: 10.0, vertical: 5),
                             child: TextField(
                               controller: _controller,
-                              onChanged: (val) {
-                                setState(() {
-                                  query = val;
-                                  //filterQuery = '';
-                                });
-                              },
+                              onChanged: (val) => vm.updateQuery(val),
                               cursorColor: kPrimaryColor,
                               decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.symmetric(
                                     vertical: 10, horizontal: 10),
                                 suffixIcon: IconButton(
                                     onPressed: () {
-                                      if (query.isNotEmpty) {
-                                        setState(() {
-                                          query = '';
-                                        });
+                                      if (vm.query.isNotEmpty) {
+                                        vm.updateQuery('');
                                         _controller.clear();
                                       }
                                     },
                                     icon: Icon(
-                                      query.isNotEmpty
+                                      vm.query.isNotEmpty
                                           ? Icons.close
                                           : Dietre.search_normal,
                                       color: kPrimaryColor,
@@ -259,7 +191,7 @@ class _ExplorePageState extends State<ExplorePage> {
                       const SizedBox(
                         height: 10,
                       ),
-                      filterQuery.isNotEmpty
+                      vm.filterQuery.isNotEmpty
                           ? Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
                               child: _filterQueryContainer(),
@@ -271,11 +203,9 @@ class _ExplorePageState extends State<ExplorePage> {
                                     final foodType =
                                         await _filterDialog(context);
                                     if (foodType != null) {
-                                      setState(() {
-                                        filterQuery =
-                                            UserUtils.getFoodTypeString(
-                                                foodType!);
-                                      });
+                                      vm.updateFilterQuery(
+                                          UserUtils.getFoodTypeString(
+                                              foodType!));
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(
@@ -299,10 +229,10 @@ class _ExplorePageState extends State<ExplorePage> {
                             ),
                       Expanded(
                         flex: 5,
-                        child: query.isNotEmpty || filterQuery.isNotEmpty
-                            ? _buildSearchResults(query, filterQuery)
+                        child: vm.query.isNotEmpty || vm.filterQuery.isNotEmpty
+                            ? _buildSearchResults()
                             : StreamBuilder<List<SavedMeal?>>(
-                                stream: vm.savedMealsStream(),
+                                stream: vm.exploreMealsStream(),
                                 builder: (context, snapshot) {
                                   return GridViewItemsBuilder<SavedMeal>(
                                       snapshot: snapshot,
@@ -406,12 +336,12 @@ class _ExplorePageState extends State<ExplorePage> {
                         children: [
                           Radio(
                             value: FoodType.breakfast,
-                            groupValue: _foodType,
-                            onChanged: (FoodType? val) {
-                              setState(() {
-                                _foodType = val!;
-                              });
-                            },
+                            groupValue: vm.foodType,
+                            onChanged: (FoodType? val) => setState(
+                              () {
+                                vm.foodType = val;
+                              },
+                            ),
                             activeColor: kPrimaryColor,
                           ),
                           const SizedBox(
@@ -430,12 +360,12 @@ class _ExplorePageState extends State<ExplorePage> {
                         children: [
                           Radio(
                             value: FoodType.lunch,
-                            groupValue: _foodType,
-                            onChanged: (FoodType? val) {
-                              setState(() {
-                                _foodType = val!;
-                              });
-                            },
+                            groupValue: vm.foodType,
+                            onChanged: (FoodType? val) => setState(
+                              () {
+                                vm.foodType = val;
+                              },
+                            ),
                             activeColor: kPrimaryColor,
                           ),
                           const SizedBox(
@@ -454,12 +384,12 @@ class _ExplorePageState extends State<ExplorePage> {
                         children: [
                           Radio(
                             value: FoodType.dinner,
-                            groupValue: _foodType,
-                            onChanged: (FoodType? val) {
-                              setState(() {
-                                _foodType = val!;
-                              });
-                            },
+                            groupValue: vm.foodType,
+                            onChanged: (FoodType? val) => setState(
+                              () {
+                                vm.foodType = val;
+                              },
+                            ),
                             activeColor: kPrimaryColor,
                           ),
                           const SizedBox(
@@ -477,7 +407,7 @@ class _ExplorePageState extends State<ExplorePage> {
                       Center(
                         child: TextButton(
                             onPressed: () {
-                              Navigator.of(context).pop(_foodType);
+                              Navigator.of(context).pop(vm.foodType);
                             },
                             style: ElevatedButton.styleFrom(
                                 primary: kPrimaryColor,
@@ -547,12 +477,12 @@ class _ExplorePageState extends State<ExplorePage> {
                         children: [
                           Radio(
                             value: FoodType.breakfast,
-                            groupValue: _foodType,
-                            onChanged: (FoodType? val) {
-                              setState(() {
-                                _foodType = val!;
-                              });
-                            },
+                            groupValue: vm.foodType,
+                            onChanged: (FoodType? val) => setState(
+                              () {
+                                vm.foodType = val;
+                              },
+                            ),
                             activeColor: kPrimaryColor,
                           ),
                           const SizedBox(
@@ -571,12 +501,12 @@ class _ExplorePageState extends State<ExplorePage> {
                         children: [
                           Radio(
                             value: FoodType.lunch,
-                            groupValue: _foodType,
-                            onChanged: (FoodType? val) {
-                              setState(() {
-                                _foodType = val!;
-                              });
-                            },
+                            groupValue: vm.foodType,
+                            onChanged: (FoodType? val) => setState(
+                              () {
+                                vm.foodType = val;
+                              },
+                            ),
                             activeColor: kPrimaryColor,
                           ),
                           const SizedBox(
@@ -595,12 +525,12 @@ class _ExplorePageState extends State<ExplorePage> {
                         children: [
                           Radio(
                             value: FoodType.dinner,
-                            groupValue: _foodType,
-                            onChanged: (FoodType? val) {
-                              setState(() {
-                                _foodType = val!;
-                              });
-                            },
+                            groupValue: vm.foodType,
+                            onChanged: (FoodType? val) => setState(
+                              () {
+                                vm.foodType = val;
+                              },
+                            ),
                             activeColor: kPrimaryColor,
                           ),
                           const SizedBox(
@@ -618,7 +548,7 @@ class _ExplorePageState extends State<ExplorePage> {
                       Center(
                         child: TextButton(
                             onPressed: () {
-                              Navigator.of(context).pop(_foodType);
+                              Navigator.of(context).pop(vm.foodType);
                             },
                             style: ElevatedButton.styleFrom(
                                 primary: kPrimaryColor,
@@ -649,18 +579,13 @@ class _ExplorePageState extends State<ExplorePage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              filterQuery,
+              vm.filterQuery,
               style: Fonts.montserratFont(
                   color: Colors.black, size: 14, fontWeight: FontWeight.bold),
             ),
             const SizedBox(width: 5),
             GestureDetector(
-              onTap: () {
-                setState(() {
-                  filterQuery = '';
-                  _foodType = null;
-                });
-              },
+              onTap: () => vm.updateWith(filterQuery: '', foodType: null),
               child: const Icon(Icons.close, color: Colors.black),
             )
           ],

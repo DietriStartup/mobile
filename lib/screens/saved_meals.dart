@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dietri/components/dietre_icons.dart';
-import 'package:dietri/components/empty_content.dart';
 import 'package:dietri/components/errorscreen.dart';
 import 'package:dietri/components/food_card.dart';
 import 'package:dietri/components/grid_view_item_builder.dart';
@@ -14,19 +13,24 @@ import 'package:dietri/helper/user_utils.dart';
 import 'package:dietri/models/food.dart';
 import 'package:dietri/services/auth.dart';
 import 'package:dietri/services/database.dart';
-import 'package:dietri/view_models/explore_view_model.dart';
+import 'package:dietri/view_models/savedmeals_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SavedMealsPage extends StatefulWidget {
-  const SavedMealsPage({Key? key}) : super(key: key);
+  const SavedMealsPage({Key? key, required this.vm}) : super(key: key);
+  final SavedMealsViewModel vm;
 
   static Widget create(BuildContext context) {
     final db = Provider.of<Database>(context, listen: false);
     final auth = Provider.of<AuthBase>(context, listen: false);
-    return Provider<SavedMealsViewModel>(
+    return ChangeNotifierProvider<SavedMealsViewModel>(
       create: (_) => SavedMealsViewModel(db: db, auth: auth),
-      child: const SavedMealsPage(),
+      child: Consumer<SavedMealsViewModel>(
+        builder: (_, model, __) => SavedMealsPage(
+          vm: model,
+        ),
+      ),
     );
   }
 
@@ -35,47 +39,26 @@ class SavedMealsPage extends StatefulWidget {
 }
 
 class _SavedMealsPageState extends State<SavedMealsPage> {
-  List<Food> foodList = [];
-  String query = "";
   final TextEditingController _controller = TextEditingController();
-  StreamSubscription? _streamSubscription;
-  FoodType? _foodType;
+
+  SavedMealsViewModel get vm => widget.vm;
 
   @override
   void initState() {
     super.initState();
-    final db = Provider.of<Database>(context, listen: false);
-    final auth = Provider.of<AuthBase>(context, listen: false);
-
-    _streamSubscription =
-        db.userSavedMealStream(auth.currentUser!.uid).listen((event) {
-      setState(() {
-        foodList = event;
-      });
-    });
+    vm.updateFoodList();
   }
 
   @override
   void dispose() {
-    _streamSubscription!.cancel();
+    vm.closeStream();
     _controller.dispose();
     super.dispose();
   }
 
-  _buildSearchResults(String query) {
-    List<Food> foodSuggestion = [];
-    if (query.isNotEmpty) {
-      foodSuggestion = foodList.where((element) {
-        String _getFoodName = element.foodName.toLowerCase();
-        String _query = query.toLowerCase();
-        bool matches = _getFoodName.contains(_query);
-        return matches;
-      }).toList();
-    } else {
-      foodSuggestion = <Food>[];
-    }
-
-    return foodSuggestion.isEmpty
+  _buildSearchResults() {
+    vm.getFoodSearchResults();
+    return vm.foodSuggestion.isEmpty
         ? const ErrorScreen(
             title: 'No results for that search..',
           )
@@ -83,34 +66,28 @@ class _SavedMealsPageState extends State<SavedMealsPage> {
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10),
             physics: const BouncingScrollPhysics(),
-            itemCount: foodSuggestion.length,
+            itemCount: vm.foodSuggestion.length,
             itemBuilder: (context, index) {
               return FoodCard(
                   addNewMeal: () {},
-                  saveMeal: () {
-                    _deleteSavedMeal(
-                        context,
-                        foodSuggestion[index].isSavedMeal!,
-                        foodSuggestion[index]);
-                  },
+                  saveMeal: () => vm.deleteSavedMeal(vm.foodSuggestion[index]),
                   isSavedMeal: true,
                   showMealPlan: () {
-                    UserUtils.dietriModalBSheet(context, foodSuggestion[index],
+                    UserUtils.dietriModalBSheet(
+                        context,
+                        vm.foodSuggestion[index],
                         MediaQuery.of(context).size.height);
                   },
-                  foodName: foodSuggestion[index].foodName,
-                  foodURL: foodSuggestion[index].foodName);
+                  foodName: vm.foodSuggestion[index].foodName,
+                  foodURL: vm.foodSuggestion[index].foodName);
             },
           );
   }
 
   void _addNewMeal(BuildContext context, Food food, String foodTypeString,
       FoodType foodType) async {
-    final db = Provider.of<Database>(context, listen: false);
-    final auth = Provider.of<AuthBase>(context, listen: false);
     try {
-      await db.addNewMealPlan(
-          food, auth.currentUser!.uid, foodTypeString, foodType);
+      await vm.addNewMeal(food, foodTypeString, foodType);
     } on FirebaseException catch (e) {
       showExceptionAlertDialog(context,
           title: 'Could\'nt add meal', exception: e);
@@ -120,8 +97,6 @@ class _SavedMealsPageState extends State<SavedMealsPage> {
   @override
   Widget build(BuildContext context) {
     FocusScopeNode currentFocus = FocusScope.of(context);
-    final auth = Provider.of<AuthBase>(context, listen: false);
-    final db = Provider.of<Database>(context, listen: false);
     return Scaffold(
         backgroundColor: Colors.white,
         body: NestedScrollView(
@@ -145,27 +120,15 @@ class _SavedMealsPageState extends State<SavedMealsPage> {
                         horizontal: 10.0, vertical: 5),
                     child: TextField(
                       controller: _controller,
-                      onChanged: (val) {
-                        setState(() {
-                          query = val;
-                          //filterQuery = '';
-                        });
-                      },
+                      onChanged: (val) => vm.updateQuery(val),
                       cursorColor: kPrimaryColor,
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 10),
                         suffixIcon: IconButton(
-                            onPressed: () {
-                              if (query.isNotEmpty) {
-                                setState(() {
-                                  query = '';
-                                });
-                                _controller.clear();
-                              }
-                            },
+                            onPressed: () => vm.updateQuery(''),
                             icon: Icon(
-                              query.isNotEmpty
+                              vm.query.isNotEmpty
                                   ? Icons.close
                                   : Dietre.search_normal,
                               color: kPrimaryColor,
@@ -198,11 +161,10 @@ class _SavedMealsPageState extends State<SavedMealsPage> {
                   ),
                   Expanded(
                     flex: 5,
-                    child: query.isNotEmpty
-                        ? _buildSearchResults(query)
+                    child: vm.query.isNotEmpty
+                        ? _buildSearchResults()
                         : StreamBuilder<List<Food?>>(
-                            stream:
-                                db.userSavedMealStream(auth.currentUser!.uid),
+                            stream: vm.userSavedMealStream(),
                             builder: (context, snapshot) {
                               return GridViewItemsBuilder<Food>(
                                   snapshot: snapshot,
@@ -222,12 +184,8 @@ class _SavedMealsPageState extends State<SavedMealsPage> {
                                               foodType);
                                         }
                                       },
-                                      saveMeal: () {
-                                        _deleteSavedMeal(
-                                            context,
-                                            savedMeal.isSavedMeal ?? false,
-                                            savedMeal);
-                                      },
+                                      saveMeal: () =>
+                                          vm.deleteSavedMeal(savedMeal),
                                       isSavedMeal:
                                           savedMeal.isSavedMeal ?? false,
                                       showMealPlan: () {
@@ -299,10 +257,10 @@ class _SavedMealsPageState extends State<SavedMealsPage> {
                         children: [
                           Radio(
                             value: FoodType.breakfast,
-                            groupValue: _foodType,
+                            groupValue: vm.foodType,
                             onChanged: (FoodType? val) {
                               setState(() {
-                                _foodType = val!;
+                                vm.foodType = val!;
                               });
                             },
                             activeColor: kPrimaryColor,
@@ -323,10 +281,10 @@ class _SavedMealsPageState extends State<SavedMealsPage> {
                         children: [
                           Radio(
                             value: FoodType.lunch,
-                            groupValue: _foodType,
+                            groupValue: vm.foodType,
                             onChanged: (FoodType? val) {
                               setState(() {
-                                _foodType = val!;
+                                vm.foodType = val!;
                               });
                             },
                             activeColor: kPrimaryColor,
@@ -347,10 +305,10 @@ class _SavedMealsPageState extends State<SavedMealsPage> {
                         children: [
                           Radio(
                             value: FoodType.dinner,
-                            groupValue: _foodType,
+                            groupValue: vm.foodType,
                             onChanged: (FoodType? val) {
                               setState(() {
-                                _foodType = val!;
+                                vm.foodType = val!;
                               });
                             },
                             activeColor: kPrimaryColor,
@@ -370,7 +328,7 @@ class _SavedMealsPageState extends State<SavedMealsPage> {
                       Center(
                         child: TextButton(
                             onPressed: () {
-                              Navigator.of(context).pop(_foodType);
+                              Navigator.of(context).pop(vm.foodType);
                             },
                             style: ElevatedButton.styleFrom(
                                 primary: kPrimaryColor,
@@ -388,16 +346,5 @@ class _SavedMealsPageState extends State<SavedMealsPage> {
             );
           });
         });
-  }
-
-  void _deleteSavedMeal(
-      BuildContext context, bool isSavedMeal, Food food) async {
-    final db = Provider.of<Database>(context, listen: false);
-    final auth = Provider.of<AuthBase>(context, listen: false);
-    try {
-      await db.deleteSavedMeal(food.foodId, auth.currentUser!.uid);
-    } catch (e) {
-      debugPrint(e.toString());
-    }
   }
 }
