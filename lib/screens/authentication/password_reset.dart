@@ -4,6 +4,7 @@ import 'package:dietri/components/input_field.dart';
 import 'package:dietri/components/show_exception_dialog.dart';
 import 'package:dietri/constants/colors.dart';
 import 'package:dietri/constants/fonts.dart';
+import 'package:dietri/helper/routes.dart';
 import 'package:dietri/helper/sizer.dart';
 import 'package:dietri/services/auth.dart';
 import 'package:dietri/services/database.dart';
@@ -13,30 +14,31 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../helper/routes.dart';
+class ResetPasswordPage extends StatefulWidget {
+  const ResetPasswordPage({
+    Key? key,
+    // required this.model
+  }) : super(key: key);
+  // final SignInPageViewModel model;
 
-class AuthScreen extends StatefulWidget {
-  const AuthScreen({Key? key, required this.model}) : super(key: key);
-  final SignInPageViewModel model;
-
-  static Widget create(BuildContext context) {
-    final auth = Provider.of<AuthBase>(context);
-    final db = Provider.of<Database>(context);
-    return ChangeNotifierProvider<SignInPageViewModel>(
-      create: (_) => SignInPageViewModel(auth: auth, db: db),
-      child: Consumer<SignInPageViewModel>(
-        builder: (_, model, __) => AuthScreen(
-          model: model,
-        ),
-      ),
-    );
-  }
+  // static Widget create(BuildContext context) {
+  //   final auth = Provider.of<AuthBase>(context);
+  //   final db = Provider.of<Database>(context);
+  //   return ChangeNotifierProvider<SignInPageViewModel>(
+  //     create: (_) => SignInPageViewModel(auth: auth, db: db),
+  //     child: Consumer<SignInPageViewModel>(
+  //       builder: (_, model, __) => ResetPasswordPage(
+  //         // model: model,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   @override
-  _AuthScreenState createState() => _AuthScreenState();
+  _ResetPasswordPageState createState() => _ResetPasswordPageState();
 }
 
-class _AuthScreenState extends State<AuthScreen> {
+class _ResetPasswordPageState extends State<ResetPasswordPage> {
   static final _formKey = GlobalKey<FormState>();
   FocusNode focusNode = FocusNode();
   TextEditingController emailEditingController = TextEditingController();
@@ -46,11 +48,14 @@ class _AuthScreenState extends State<AuthScreen> {
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
   final FocusNode _cPasswordFocusNode = FocusNode();
-  SignInPageViewModel get model => widget.model;
+  bool hasConfirmedPassword = false;
+  bool obscureConfirmPassWord = false;
+  bool obscurePassWord = false;
+  // SignInPageViewModel get model => widget.model;
 
   void _submit() async {
     try {
-      await model.submit();
+      // await model.submit();
     } on FirebaseAuthException catch (e) {
       showExceptionAlertDialog(context, title: 'Sign In Failed', exception: e);
     }
@@ -58,35 +63,35 @@ class _AuthScreenState extends State<AuthScreen> {
 
   void _signInWithGoogle() async {
     try {
-      await model.signInWithGoogle();
+      // await model.signInWithGoogle();
       //Navigator.of(context).pop();
     } on FirebaseAuthException catch (e) {
       showExceptionAlertDialog(context, title: 'Sign In Failed', exception: e);
     }
   }
 
-  GeneralTextField _buildPasswordTextField() {
+    GeneralTextField _buildPasswordTextField() {
     return GeneralTextField(
       textController: newPasswordEditingController,
       //validator: passwordVal,
-      hintText: 'Password',
+      hintText: 'Enter New Password',
       textInputAction: TextInputAction.next,
       focusNode: _passwordFocusNode,
-      obscureText: model.obscurePassWord,
+      obscureText: obscurePassWord,
       //inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r"\s"))],
-      onChanged: model.updatePassword,
-      errorText: model.passwordErrorText,
+      // onChanged: ,
+      // errorText: passwordErrorText,
 
       suffixIcon: InkWell(
         onTap: () {
-          model.updateObscurePassword(!model.obscurePassWord);
+          // model.updateObscurePassword(!model.obscurePassWord);
         },
         onFocusChange: (isHover) {
           // Move the focus to the next node explicitly.
           isHover ? FocusScope.of(context).nextFocus() : null;
         },
         child: Icon(
-          model.obscurePassWord
+          obscurePassWord
               ? Icons.visibility_off_outlined
               : Icons.visibility_outlined,
           size: sizer(true, 24, context),
@@ -103,19 +108,19 @@ class _AuthScreenState extends State<AuthScreen> {
       hintText: 'Confirm Password',
       focusNode: _cPasswordFocusNode,
       textInputAction: TextInputAction.next,
-      obscureText: model.obscureConfirmPassWord,
+      obscureText: obscureConfirmPassWord,
       keyboardType: TextInputType.text,
       // inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r"\s"))],
-      onChanged: model.updateConfirmPassword,
-      errorText: model.isSignInPage
-          ? model.passwordErrorText
-          : model.passWordDontMatchText,
+      // onChanged: updateConfirmPassword,
+      // errorText: model.isSignInPage
+      //     ? model.passwordErrorText
+      //     : model.passWordDontMatchText,
       suffixIcon: IconButton(
         onPressed: () {
-          model.updateObscureConfirmPassword(!model.obscureConfirmPassWord);
+          // model.updateObscureConfirmPassword(!model.obscureConfirmPassWord);
         },
         icon: Icon(
-          model.obscureConfirmPassWord
+           obscureConfirmPassWord
               ? Icons.visibility_off_outlined
               : Icons.visibility_outlined,
           size: sizer(true, 24, context),
@@ -124,6 +129,7 @@ class _AuthScreenState extends State<AuthScreen> {
       ),
     );
   }
+
 
   GeneralTextField _buildEmailTextField() {
     return GeneralTextField(
@@ -134,9 +140,9 @@ class _AuthScreenState extends State<AuthScreen> {
       keyboardType: TextInputType.emailAddress,
       //autoValidateMode: AutovalidateMode.onUserInteraction,
       // hintText: "email",
-      errorText: model.emailErrorText,
+      // errorText: emailErrorText,
       textInputAction: TextInputAction.next,
-      onChanged: model.updateEmail,
+      // onChanged: model.updateEmail,
       onEditingComplete: () {
         // Move the focus to the next node explicitly.
         FocusScope.of(context).nextFocus();
@@ -180,122 +186,75 @@ class _AuthScreenState extends State<AuthScreen> {
                   key: _formKey,
                   child: MyBottomSheet(
                       paddingTop: sizer(true, 54.0, context),
-                      offset: sizer(true, 250.0, context),
+                      offset: hasConfirmedPassword == false
+                          ? sizer(true, 280.0, context)
+                          : sizer(true, 300, context),
                       color: kWhiteColor,
                       content: [
-                        _buildEmailTextField(),
-                        SizedBox(
-                          height: sizer(false, 35.0, context),
+                        Column(
+                          children: [
+                            Text(
+                                'Password Reset',
+                              style: TextStyle(
+                                color: kBlack,
+                                fontWeight: FontWeight.w700,
+                                height: 1.2,
+                                fontSize: sizer(true, 20.0, context),
+                              ),
+                            ),
+                            SizedBox(
+                              height: sizer(false, 35.0, context),
+                            ),
+                          ],
                         ),
+                  
+                        SizedBox(
+                          height: sizer(false, 15.0, context),
+                        ),
+
                         _buildPasswordTextField(),
+
                         SizedBox(
-                          height: sizer(false, 30.0, context),
+                          height: sizer(false, 15.0, context),
                         ),
-                        if (!model.isSignInPage)
-                          _buildConfirmPasswordTextField(),
-                        if (!model.isSignInPage)
-                          SizedBox(
-                            height: sizer(false, 30.0, context),
-                          ),
-                        model.isSignInPage
-                            ? GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).pushNamed(
-                                      Routes.ForgotPasswordPageRoute);
-                                },
-                              child: const Text(
-                                  'Forgot Password?',
-                                  style: TextStyle(
-                                    fontSize: 15.0,
-                                    color: kBlack,
-                                    decoration: TextDecoration.underline,
-                                    decorationThickness: 1.5,
-                                    decorationColor: kBlack,
-                                  ),
-                                ),
-                            )
-                            : Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                    RichText(
-                                        text: TextSpan(
-                                            text:
-                                                'By Signing up, you are agreeing to\nour ',
-                                            style: Fonts.robotoFont(
-                                                color: kBlack,
-                                                size:
-                                                    sizer(true, 15.0, context),
-                                                fontWeight: FontWeight.w400),
-                                            children: const [
-                                          TextSpan(
-                                              text: 'Terms and Policy',
-                                              style: TextStyle(
-                                                fontSize: 15.0,
-                                                decoration:
-                                                    TextDecoration.underline,
-                                                decorationThickness: 1.5,
-                                                decorationColor: kBlack,
-                                              ))
-                                        ])),
-                                  ]),
+
+                        _buildConfirmPasswordTextField(),
+
                         SizedBox(
                           height: sizer(false, 30, context),
                         ),
                         FullButton(
                           height: sizer(true, 50, context),
                           width: MediaQuery.of(context).size.width,
-                          buttonText:
-                              model.isSignInPage ? 'Sign In' : 'Sign Up',
-                          buttonFunction: _submit,
+                          buttonText: 
+                               'Change Password',
+                          buttonFunction: () {
+                            hasConfirmedPassword == false
+                                ? _submit
+                                : Navigator.of(context)
+                                    .pushNamed(Routes.signInRoute);
+                            setState(() {
+                              hasConfirmedPassword = true;
+                            });
+                          },
                         ),
                         const SizedBox(
                           height: 14.5,
                         ),
-                        if (!model.isSignInPage)
-                          Center(
-                            child: Image.asset(
-                              'assets/images/biometric.png',
-                              scale: 0.5,
-                              width: 58.0,
-                              height: 58.0,
-                            ),
-                          ),
-                        if (!model.isSignInPage)
-                          const SizedBox(
-                            height: 14.5,
-                          ),
-                        if (!model.isSignInPage)
-                          Center(
-                            child: Text(
-                              'Biometric',
-                              style: TextStyle(
-                                  color: kBlack,
-                                  fontSize: sizer(true, 15.0, context),
-                                  fontWeight: FontWeight.w400),
-                            ),
-                          ),
-                        const SizedBox(
-                          height: 13.0,
-                        ),
-                        const Divider(
-                          color: Colors.black,
-                          thickness: 1.0,
-                        ),
+
                         const SizedBox(
                           height: 13.0,
                         ),
                         Center(
                           child: Text(
-                            model.isSignInPage
-                                ? 'Sign In with Social'
-                                : 'Quick SignUp',
+                            'Quick Sign Up?',
                             style: TextStyle(
                                 color: kBlack,
                                 fontSize: sizer(true, 15.0, context)),
                           ),
                         ),
                         SizedBox(
-                          height: sizer(false, 15, context),
+                          height: sizer(false, 22, context),
                         ),
                         Center(
                           child: GestureDetector(
@@ -309,21 +268,17 @@ class _AuthScreenState extends State<AuthScreen> {
                           ),
                         ),
                         SizedBox(
-                          height: sizer(false, 15, context),
+                          height: sizer(false, 23, context),
                         ),
                         RichText(
                             text: TextSpan(
                                 style: const TextStyle(color: kBlack),
                                 children: [
-                              TextSpan(
-                                  text: model.isSignInPage
-                                      ? "New to Dietri? "
-                                      : 'Have an account?',
+                              const TextSpan(
+                                  text: "Have an account? ",
                                   style: TextStyle(fontSize: 15.0)),
                               TextSpan(
-                                  text: model.isSignInPage
-                                      ? 'Sign Up'
-                                      : 'Sign In',
+                                  text: 'Sign In',
                                   style: const TextStyle(
                                     fontSize: 15.0,
                                     decoration: TextDecoration.underline,
@@ -333,9 +288,9 @@ class _AuthScreenState extends State<AuthScreen> {
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
                                       debugPrint('tap');
-                                      model.isSignInPage
-                                          ? model.updateIsSignInPage(false)
-                                          : model.updateIsSignInPage(true);
+                                      // updateIsSignInPage(false);
+                                      Navigator.of(context)
+                                          .pushNamed(Routes.signUpRoute);
                                       emailEditingController.clear();
                                       newPasswordEditingController.clear();
                                       confrimPasswordEditingController.clear();
