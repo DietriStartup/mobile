@@ -47,7 +47,7 @@ class ExploreViewModel with ChangeNotifier {
   }
 
   void closeStream() => _streamSubscription?.cancel();
-  
+
   void updateFoodList() {
     _streamSubscription = exploreMealsStream().listen((event) {
       updateWith(foodList: event);
@@ -56,9 +56,9 @@ class ExploreViewModel with ChangeNotifier {
 
   // updateFoodList(List<SavedMeal> foodList) => updateWith(foodList: foodList);
   updateQuery(String query) => updateWith(query: query);
-  
+
   updateFilterQuery(String filterQuery) => updateWith(filterQuery: filterQuery);
-  
+
   updateFoodType(FoodType? foodType) => updateWith(foodType: foodType);
 
   Future<void> toggleSavedMeal(
