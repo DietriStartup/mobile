@@ -66,7 +66,9 @@ class _FourthKYCScreenState extends State<FourthKYCScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text(
-            'What is your current weight?',
+            widget.viewModel != null
+                ? 'Update your current weight'
+                : 'What is your current weight?',
             textAlign: TextAlign.center,
             style: Fonts.montserratFont(
                 color: Colors.black, size: 24, fontWeight: FontWeight.w500),
@@ -98,7 +100,7 @@ class _FourthKYCScreenState extends State<FourthKYCScreen> {
                 suffixIcon: Padding(
                   padding: const EdgeInsets.only(top: 18.0),
                   child: Text(
-                    UserUtils.getWeightString(_weight),
+                    UserUtils.getWeightString(_weight ?? widget.weight),
                     style: Fonts.montserratFont(
                         color: kPrimaryColor,
                         size: 16,
@@ -125,7 +127,7 @@ class _FourthKYCScreenState extends State<FourthKYCScreen> {
                       fontWeight: FontWeight.w400),
                 ),
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: _weight == Weight.st
+                    backgroundColor: (_weight ?? widget.weight) == Weight.st
                         ? kPrimaryAccentColor
                         : Colors.white),
               ),
@@ -136,7 +138,7 @@ class _FourthKYCScreenState extends State<FourthKYCScreen> {
                           })
                       : widget.onPressed1,
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: _weight == Weight.lb
+                      backgroundColor: (_weight ?? widget.weight) == Weight.lb
                           ? kPrimaryAccentColor
                           : Colors.white),
                   child: Text(
@@ -153,7 +155,7 @@ class _FourthKYCScreenState extends State<FourthKYCScreen> {
                           })
                       : widget.onPressed2,
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: _weight == Weight.kg
+                      backgroundColor: (_weight ?? widget.weight) == Weight.kg
                           ? kPrimaryAccentColor
                           : Colors.white),
                   child: Text(

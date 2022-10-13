@@ -37,7 +37,7 @@ class _ThirdKYCScreenState extends State<ThirdKYCScreen> {
     }
   }
 
-   void _updateUserGoalsinDataBase(Goals goals) async {
+  void _updateUserGoalsinDataBase(Goals goals) async {
     try {
       await widget.viewModel?.updateUserGoals(goals);
     } on FirebaseException catch (e) {
@@ -60,7 +60,9 @@ class _ThirdKYCScreenState extends State<ThirdKYCScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'What is your current goal?',
+            widget.viewModel != null
+                ? 'Update your current goal'
+                : 'What is your current goal?',
             textAlign: TextAlign.center,
             style: Fonts.montserratFont(
                 color: Colors.black, size: 24, fontWeight: FontWeight.w500),
@@ -74,13 +76,13 @@ class _ThirdKYCScreenState extends State<ThirdKYCScreen> {
               style: ElevatedButton.styleFrom(
                   minimumSize: Size(
                       sizer(true, 388, context), sizer(false, 60, context)),
-                  backgroundColor: _goals == Goals.gainweight
+                  backgroundColor: (_goals ?? widget.goals) == Goals.gainweight
                       ? kPrimaryColor
                       : Colors.white),
               child: Text(
                 'Gain weight',
                 style: Fonts.montserratFont(
-                    color: _goals == Goals.gainweight
+                    color: (_goals ?? widget.goals) == Goals.gainweight
                         ? Colors.white
                         : kPrimaryColor,
                     size: 16,
@@ -95,13 +97,14 @@ class _ThirdKYCScreenState extends State<ThirdKYCScreen> {
               style: ElevatedButton.styleFrom(
                   minimumSize: Size(
                       sizer(true, 388, context), sizer(false, 60, context)),
-                  backgroundColor: _goals == Goals.maintainweight
-                      ? kPrimaryColor
-                      : Colors.white),
+                  backgroundColor:
+                      (_goals ?? widget.goals) == Goals.maintainweight
+                          ? kPrimaryColor
+                          : Colors.white),
               child: Text(
                 'Maintain Weight',
                 style: Fonts.montserratFont(
-                    color: _goals == Goals.maintainweight
+                    color: (_goals ?? widget.goals) == Goals.maintainweight
                         ? Colors.white
                         : kPrimaryColor,
                     size: 16,
@@ -116,13 +119,13 @@ class _ThirdKYCScreenState extends State<ThirdKYCScreen> {
               style: ElevatedButton.styleFrom(
                   minimumSize: Size(
                       sizer(true, 388, context), sizer(false, 60, context)),
-                  backgroundColor: _goals == Goals.looseweight
+                  backgroundColor: (_goals ?? widget.goals) == Goals.looseweight
                       ? kPrimaryColor
                       : Colors.white),
               child: Text(
                 'Lose weight',
                 style: Fonts.montserratFont(
-                    color: _goals == Goals.looseweight
+                    color: (_goals ?? widget.goals) == Goals.looseweight
                         ? Colors.white
                         : kPrimaryColor,
                     size: 16,

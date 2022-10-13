@@ -36,7 +36,7 @@ class _SecondKYCScreenState extends State<SecondKYCScreen> {
     }
   }
 
-     void _updateUserGenderinDataBase(Gender gender) async {
+  void _updateUserGenderinDataBase(Gender gender) async {
     try {
       await widget.viewModel?.updateUserGender(gender);
     } on FirebaseException catch (e) {
@@ -50,7 +50,6 @@ class _SecondKYCScreenState extends State<SecondKYCScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -60,63 +59,77 @@ class _SecondKYCScreenState extends State<SecondKYCScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'What is your gender?',
+            widget.viewModel != null
+                ? 'Update your gender'
+                : 'What is your gender?',
             textAlign: TextAlign.center,
             style: Fonts.montserratFont(
                 color: Colors.black, size: 24, fontWeight: FontWeight.w500),
           ),
           OutlinedButton(
-              onPressed: widget.viewModel != null ? () => setState(() {
-                    _gender = Gender.male;
-                  }): widget.onPressed,
+              onPressed: widget.viewModel != null
+                  ? () => setState(() {
+                        _gender = Gender.male;
+                      })
+                  : widget.onPressed,
               style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      _gender == Gender.male ? kPrimaryColor : Colors.white,
+                  backgroundColor: (_gender ?? widget.gender) == Gender.male
+                      ? kPrimaryColor
+                      : Colors.white,
                   minimumSize: Size(
                       sizer(true, 388, context), sizer(false, 60, context))),
               child: Text(
                 'Male',
                 style: Fonts.montserratFont(
-                    color:
-                        _gender == Gender.male ? Colors.white : kPrimaryColor,
+                    color: (_gender ?? widget.gender) == Gender.male
+                        ? Colors.white
+                        : kPrimaryColor,
                     size: 16,
                     fontWeight: FontWeight.w500),
               )),
           OutlinedButton(
-              onPressed: widget.viewModel != null ? () => setState(() {
-                    _gender = Gender.female;
-                  }) : widget.onPressed1,
+              onPressed: widget.viewModel != null
+                  ? () => setState(() {
+                        _gender = Gender.female;
+                      })
+                  : widget.onPressed1,
               style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      _gender == Gender.female ? kPrimaryColor : Colors.white,
+                  backgroundColor: (_gender ?? widget.gender) == Gender.female
+                      ? kPrimaryColor
+                      : Colors.white,
                   minimumSize: Size(
                       sizer(true, 388, context), sizer(false, 60, context))),
               child: Text(
                 'Female',
                 style: Fonts.montserratFont(
-                    color:
-                        _gender == Gender.female ? Colors.white : kPrimaryColor,
+                    color: (_gender ?? widget.gender) == Gender.female
+                        ? Colors.white
+                        : kPrimaryColor,
                     size: 16,
                     fontWeight: FontWeight.w500),
               )),
           OutlinedButton(
-              onPressed: widget.viewModel != null?  () => setState(() {
-                    _gender = Gender.others;
-                  }) : widget.onPressed2,
+              onPressed: widget.viewModel != null
+                  ? () => setState(() {
+                        _gender = Gender.others;
+                      })
+                  : widget.onPressed2,
               style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      _gender == Gender.others ? kPrimaryColor : Colors.white,
+                  backgroundColor: (_gender ?? widget.gender) == Gender.others
+                      ? kPrimaryColor
+                      : Colors.white,
                   minimumSize: Size(
                       sizer(true, 388, context), sizer(false, 60, context))),
               child: Text(
                 'Others',
                 style: Fonts.montserratFont(
-                    color:
-                        _gender == Gender.others ? Colors.white : kPrimaryColor,
+                    color: (_gender ?? widget.gender) == Gender.others
+                        ? Colors.white
+                        : kPrimaryColor,
                     size: 16,
                     fontWeight: FontWeight.w500),
               )),
-        if (widget.viewModel != null)
+          if (widget.viewModel != null)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 100.0),
               child: TextButton(
