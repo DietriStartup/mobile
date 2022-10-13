@@ -1,6 +1,7 @@
 import 'package:dietri/components/bottom_sheet.dart';
 import 'package:dietri/components/button.dart';
 import 'package:dietri/components/input_field.dart';
+import 'package:dietri/components/show_alert_dialog.dart';
 import 'package:dietri/components/show_exception_dialog.dart';
 import 'package:dietri/constants/colors.dart';
 import 'package:dietri/constants/fonts.dart';
@@ -56,6 +57,12 @@ class _AuthScreenState extends State<AuthScreen> {
     }
   }
 
+  void _showSentVerificationEmailDialog() {
+    showAlertDialog(context, title: 'Verify Email', content: 'A verification link has been sent to your email address', defaultActionText: 'OK');
+    _submit();
+  }
+
+
   void _signInWithGoogle() async {
     try {
       await model.signInWithGoogle();
@@ -65,92 +72,9 @@ class _AuthScreenState extends State<AuthScreen> {
     }
   }
 
-  GeneralTextField _buildPasswordTextField() {
-    return GeneralTextField(
-      textController: newPasswordEditingController,
-      //validator: passwordVal,
-      hintText: 'Password',
-      textInputAction: TextInputAction.next,
-      focusNode: _passwordFocusNode,
-      obscureText: model.obscurePassWord,
-      //inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r"\s"))],
-      onChanged: model.updatePassword,
-      errorText: model.passwordErrorText,
-
-      suffixIcon: InkWell(
-        onTap: () {
-          model.updateObscurePassword(!model.obscurePassWord);
-        },
-        onFocusChange: (isHover) {
-          // Move the focus to the next node explicitly.
-          isHover ? FocusScope.of(context).nextFocus() : null;
-        },
-        child: Icon(
-          model.obscurePassWord
-              ? Icons.visibility_off_outlined
-              : Icons.visibility_outlined,
-          size: sizer(true, 24, context),
-          color: kBlack,
-        ),
-      ),
-    );
-  }
-
-  GeneralTextField _buildConfirmPasswordTextField() {
-    return GeneralTextField(
-      textController: confrimPasswordEditingController,
-      // validator: passwordVal,
-      hintText: 'Confirm Password',
-      focusNode: _cPasswordFocusNode,
-      textInputAction: TextInputAction.next,
-      obscureText: model.obscureConfirmPassWord,
-      keyboardType: TextInputType.text,
-      // inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r"\s"))],
-      onChanged: model.updateConfirmPassword,
-      errorText: model.isSignInPage
-          ? model.passwordErrorText
-          : model.passWordDontMatchText,
-      suffixIcon: IconButton(
-        onPressed: () {
-          model.updateObscureConfirmPassword(!model.obscureConfirmPassWord);
-        },
-        icon: Icon(
-          model.obscureConfirmPassWord
-              ? Icons.visibility_off_outlined
-              : Icons.visibility_outlined,
-          size: sizer(true, 24, context),
-          color: kBlack,
-        ),
-      ),
-    );
-  }
-
-  GeneralTextField _buildEmailTextField() {
-    return GeneralTextField(
-      hintText: 'Email',
-
-      focusNode: _emailFocusNode,
-      textController: emailEditingController,
-      keyboardType: TextInputType.emailAddress,
-      //autoValidateMode: AutovalidateMode.onUserInteraction,
-      // hintText: "email",
-      errorText: model.emailErrorText,
-      textInputAction: TextInputAction.next,
-      onChanged: model.updateEmail,
-      onEditingComplete: () {
-        // Move the focus to the next node explicitly.
-        FocusScope.of(context).nextFocus();
-      },
-    );
-  }
-
   //USED ONE WIDGET FOR BOTH SIGN-IN AND SIGN-UP
   @override
   Widget build(BuildContext context) {
-    return _signIn(context);
-  }
-
-  SafeArea _signIn(BuildContext context) {
     return SafeArea(
       child: Container(
         decoration: const BoxDecoration(
@@ -183,16 +107,30 @@ class _AuthScreenState extends State<AuthScreen> {
                       offset: sizer(true, 250.0, context),
                       color: kWhiteColor,
                       content: [
-                        _buildEmailTextField(),
+                        EmailTextField(
+                          emailFocusNode: _emailFocusNode,
+                          emailEditingController: emailEditingController,
+                          model: model,
+                        ),
                         SizedBox(
                           height: sizer(false, 35.0, context),
                         ),
-                        _buildPasswordTextField(),
+                        PasswordTextField(
+                          newPasswordEditingController:
+                              newPasswordEditingController,
+                          passwordFocusNode: _passwordFocusNode,
+                          model: model,
+                        ),
                         SizedBox(
                           height: sizer(false, 30.0, context),
                         ),
                         if (!model.isSignInPage)
-                          _buildConfirmPasswordTextField(),
+                          ConfirmPasswordTextField(
+                            confrimPasswordEditingController:
+                                confrimPasswordEditingController,
+                            cPasswordFocusNode: _cPasswordFocusNode,
+                            model: model,
+                          ),
                         if (!model.isSignInPage)
                           SizedBox(
                             height: sizer(false, 30.0, context),
@@ -200,10 +138,10 @@ class _AuthScreenState extends State<AuthScreen> {
                         model.isSignInPage
                             ? GestureDetector(
                                 onTap: () {
-                                  Navigator.of(context).pushNamed(
-                                      Routes.ForgotPasswordPageRoute);
+                                  Navigator.of(context)
+                                      .pushNamed(Routes.resetPasswordPageRoute);
                                 },
-                              child: const Text(
+                                child: const Text(
                                   'Forgot Password?',
                                   style: TextStyle(
                                     fontSize: 15.0,
@@ -213,7 +151,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                     decorationColor: kBlack,
                                   ),
                                 ),
-                            )
+                              )
                             : Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -246,7 +184,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           width: MediaQuery.of(context).size.width,
                           buttonText:
                               model.isSignInPage ? 'Sign In' : 'Sign Up',
-                          buttonFunction: _submit,
+                          buttonFunction: model.isSignInPage ? _submit : _showSentVerificationEmailDialog,
                         ),
                         const SizedBox(
                           height: 14.5,
@@ -319,7 +257,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                   text: model.isSignInPage
                                       ? "New to Dietri? "
                                       : 'Have an account?',
-                                  style: TextStyle(fontSize: 15.0)),
+                                  style: const TextStyle(fontSize: 15.0)),
                               TextSpan(
                                   text: model.isSignInPage
                                       ? 'Sign Up'
@@ -346,6 +284,130 @@ class _AuthScreenState extends State<AuthScreen> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class PasswordTextField extends StatelessWidget {
+  const PasswordTextField({
+    Key? key,
+    required this.newPasswordEditingController,
+    required FocusNode passwordFocusNode,
+    required this.model,
+  })  : _passwordFocusNode = passwordFocusNode,
+        super(key: key);
+
+  final TextEditingController newPasswordEditingController;
+  final FocusNode _passwordFocusNode;
+  final SignInPageViewModel model;
+
+  @override
+  Widget build(BuildContext context) {
+    return GeneralTextField(
+      textController: newPasswordEditingController,
+      //validator: passwordVal,
+      hintText: 'Password',
+      textInputAction: TextInputAction.next,
+      focusNode: _passwordFocusNode,
+      obscureText: model.obscurePassWord,
+      //inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r"\s"))],
+      onChanged: model.updatePassword,
+      errorText: model.passwordErrorText,
+
+      suffixIcon: InkWell(
+        onTap: () {
+          model.updateObscurePassword(!model.obscurePassWord);
+        },
+        onFocusChange: (isHover) {
+          // Move the focus to the next node explicitly.
+          isHover ? FocusScope.of(context).nextFocus() : null;
+        },
+        child: Icon(
+          model.obscurePassWord
+              ? Icons.visibility_off_outlined
+              : Icons.visibility_outlined,
+          size: sizer(true, 24, context),
+          color: kBlack,
+        ),
+      ),
+    );
+  }
+}
+
+class EmailTextField extends StatelessWidget {
+  const EmailTextField({
+    Key? key,
+    required FocusNode emailFocusNode,
+    required this.emailEditingController,
+    required this.model,
+  })  : _emailFocusNode = emailFocusNode,
+        super(key: key);
+
+  final FocusNode _emailFocusNode;
+  final TextEditingController emailEditingController;
+  final SignInPageViewModel model;
+
+  @override
+  Widget build(BuildContext context) {
+    return GeneralTextField(
+      hintText: 'Email',
+
+      focusNode: _emailFocusNode,
+      textController: emailEditingController,
+      keyboardType: TextInputType.emailAddress,
+      //autoValidateMode: AutovalidateMode.onUserInteraction,
+      // hintText: "email",
+      errorText: model.emailErrorText,
+      textInputAction: TextInputAction.next,
+      onChanged: model.updateEmail,
+      onEditingComplete: () {
+        // Move the focus to the next node explicitly.
+        FocusScope.of(context).nextFocus();
+      },
+    );
+  }
+}
+
+class ConfirmPasswordTextField extends StatelessWidget {
+  const ConfirmPasswordTextField({
+    Key? key,
+    required this.confrimPasswordEditingController,
+    required FocusNode cPasswordFocusNode,
+    required this.model,
+  })  : _cPasswordFocusNode = cPasswordFocusNode,
+        super(key: key);
+
+  final TextEditingController confrimPasswordEditingController;
+  final FocusNode _cPasswordFocusNode;
+  final SignInPageViewModel model;
+
+  @override
+  Widget build(BuildContext context) {
+    return GeneralTextField(
+      textController: confrimPasswordEditingController,
+      // validator: passwordVal,
+      hintText: 'Confirm Password',
+      focusNode: _cPasswordFocusNode,
+      textInputAction: TextInputAction.next,
+      obscureText: model.obscureConfirmPassWord,
+      keyboardType: TextInputType.text,
+      // inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r"\s"))],
+      onChanged: model.updateConfirmPassword,
+      errorText: model.isSignInPage
+          ? model.passwordErrorText
+          : model.passWordDontMatchText,
+      suffixIcon: IconButton(
+        onPressed: () {
+          model.updateObscureConfirmPassword(!model.obscureConfirmPassWord);
+        },
+        icon: Icon(
+          model.obscureConfirmPassWord
+              ? Icons.visibility_off_outlined
+              : Icons.visibility_outlined,
+          size: sizer(true, 24, context),
+          color: kBlack,
         ),
       ),
     );

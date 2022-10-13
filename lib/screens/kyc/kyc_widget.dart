@@ -118,10 +118,13 @@ class _KYCScreensState extends State<KYCScreens> {
 
   // The Single Dot
   Widget indicator(bool isCurrent) {
-    return Container(
+    return AnimatedContainer(
       margin: const EdgeInsets.symmetric(horizontal: 5.0),
-      height: 15.0,
-      width: 15.0,
+      height: isCurrent ? 15.0 : 10,
+      width: isCurrent ? 15.0 : 10,
+      duration: const Duration(seconds: 1),
+  // Provide an optional curve to make the animation feel smoother.
+  curve: Curves.fastOutSlowIn,
       decoration: BoxDecoration(
         color: isCurrent ? kPrimaryColor : Colors.grey[300],
         borderRadius: BorderRadius.circular(12.0),

@@ -331,7 +331,7 @@ class _SavedMealsPageState extends State<SavedMealsPage> {
                               Navigator.of(context).pop(vm.foodType);
                             },
                             style: ElevatedButton.styleFrom(
-                                primary: kPrimaryColor,
+                                backgroundColor: kPrimaryColor,
                                 minimumSize: const Size(50, 30)),
                             child: Text('Add',
                                 style: Fonts.montserratFont(

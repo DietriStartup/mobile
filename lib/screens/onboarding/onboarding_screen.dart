@@ -25,7 +25,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
     } else {
       width = width * 0.9;
     }
-    return Container(
+    return AnimatedContainer(
       margin: const EdgeInsets.symmetric(horizontal: 15.0),
       height: 25.0,
       width: width,
@@ -33,6 +33,9 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
         color: kPrimaryAccentColor,
         borderRadius: BorderRadius.circular(50.0),
       ),
+      duration: const Duration(milliseconds: 300),
+      // Provide an optional curve to make the animation feel smoother.
+      curve: Curves.fastOutSlowIn,
     );
   }
 

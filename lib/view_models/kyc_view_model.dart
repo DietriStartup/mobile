@@ -40,7 +40,7 @@ class KYCViewModel with ChangeNotifier {
       }
       if (weight != null && weightString != null && isKYCComplete != null) {
         await db.updateUserWeight(
-            auth.currentUser!.uid, weight, weightString, isKYCComplete);
+            uid: auth.currentUser!.uid, weight: weight, weightParam: weightString, isKYCComplete: isKYCComplete);
       }
     } on FirebaseException catch (e) {
       debugPrint(e.toString());

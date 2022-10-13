@@ -31,11 +31,11 @@ class Auth implements AuthBase {
 
     await googleSignIn.signOut();
     
-    
   }
 
+
   @override
-  Stream<User?> authStateChanges() => _firebaseAuth.authStateChanges();
+  Stream<User?> authStateChanges() => _firebaseAuth.userChanges();
 
   @override
   Future<UserCredential?> signInWithGoogle() async {
@@ -77,6 +77,11 @@ class Auth implements AuthBase {
       String email, String password) async {
     final userCredential = await _firebaseAuth.signInWithCredential(
         EmailAuthProvider.credential(email: email, password: password));
+
+        if (userCredential.user != null) {
+          
+    await userCredential.user!.reload();
+        }
     return userCredential.user;
   }
 

@@ -25,9 +25,10 @@ class FoodCard extends StatelessWidget {
         height: 120,
         width: 180,
         decoration: BoxDecoration(
-            color: kPrimaryAccentColor,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: kPrimaryColor)),
+          color: kPrimaryAccentColor,
+          borderRadius: BorderRadius.circular(12),
+          // border: Border.all(color: kPrimaryColor),
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -60,11 +61,11 @@ class FoodCard extends StatelessWidget {
                     children: [
                       GestureDetector(
                           onTap: addNewMeal,
-                          child: Icon(
+                          child: const Icon(
                             Icons.add,
                             size: 25,
                           )),
-                      SizedBox(
+                      const SizedBox(
                         width: 3,
                       ),
                       GestureDetector(

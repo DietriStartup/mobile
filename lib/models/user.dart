@@ -8,6 +8,7 @@ class UserModel {
     required this.name,
     required this.email,
     required this.photoURL,
+
     this.gender,
     this.isKYCComplete,
     this.goal,
@@ -16,6 +17,7 @@ class UserModel {
   });
   final String name;
   final String email;
+ 
   final String? photoURL;
   final bool? isKYCComplete;
   final Gender? gender;
@@ -27,6 +29,7 @@ class UserModel {
     return {
       'name': name,
       'email': email,
+  
       'photoURL': photoURL,
       'isKYCComplete': isKYCComplete,
       'gender': UserUtils.genderToInt(gender),

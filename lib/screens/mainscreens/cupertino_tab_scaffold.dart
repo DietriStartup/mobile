@@ -29,14 +29,14 @@ class CupertinoHomeScaffold extends StatelessWidget {
         );
       },
       tabBar: CupertinoTabBar(
-        inactiveColor: Colors.white,
+        inactiveColor: Colors.grey,
         activeColor: kPrimaryAccentColor,
-        backgroundColor: kPrimaryColor,
+        backgroundColor: Colors.white,
         items: [
           _buildItem(TabItem.home),
           _buildItem(TabItem.explore),
           _buildItem(TabItem.savedmeals),
-          _buildItem(TabItem.settings),
+        //  _buildItem(TabItem.settings),
           _buildItem(TabItem.profile)
         ],
         onTap: (index) {
@@ -48,7 +48,7 @@ class CupertinoHomeScaffold extends StatelessWidget {
 
   BottomNavigationBarItem _buildItem(TabItem tabItem) {
     final itemData = TabItemData.allTabItems[tabItem];
-    final color = currentTab == tabItem ? kPrimaryAccentColor : Colors.white;
+    final color = currentTab == tabItem ? kPrimaryAccentColor : Colors.grey;
     return BottomNavigationBarItem(
       icon: Icon(
         itemData!.icon,

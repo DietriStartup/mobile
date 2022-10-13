@@ -3,16 +3,11 @@ import 'package:dietri/components/button.dart';
 import 'package:dietri/components/input_field.dart';
 import 'package:dietri/components/show_exception_dialog.dart';
 import 'package:dietri/constants/colors.dart';
-import 'package:dietri/constants/fonts.dart';
 import 'package:dietri/helper/routes.dart';
 import 'package:dietri/helper/sizer.dart';
-import 'package:dietri/services/auth.dart';
-import 'package:dietri/services/database.dart';
-import 'package:dietri/view_models/sign_in_page_vm.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   const ResetPasswordPage({
@@ -70,7 +65,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     }
   }
 
-    GeneralTextField _buildPasswordTextField() {
+  GeneralTextField _buildPasswordTextField() {
     return GeneralTextField(
       textController: newPasswordEditingController,
       //validator: passwordVal,
@@ -120,7 +115,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           // model.updateObscureConfirmPassword(!model.obscureConfirmPassWord);
         },
         icon: Icon(
-           obscureConfirmPassWord
+          obscureConfirmPassWord
               ? Icons.visibility_off_outlined
               : Icons.visibility_outlined,
           size: sizer(true, 24, context),
@@ -129,7 +124,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       ),
     );
   }
-
 
   GeneralTextField _buildEmailTextField() {
     return GeneralTextField(
@@ -153,10 +147,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   //USED ONE WIDGET FOR BOTH SIGN-IN AND SIGN-UP
   @override
   Widget build(BuildContext context) {
-    return _signIn(context);
-  }
-
-  SafeArea _signIn(BuildContext context) {
     return SafeArea(
       child: Container(
         decoration: const BoxDecoration(
@@ -194,7 +184,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         Column(
                           children: [
                             Text(
-                                'Password Reset',
+                              'Password Reset',
                               style: TextStyle(
                                 color: kBlack,
                                 fontWeight: FontWeight.w700,
@@ -202,32 +192,38 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                 fontSize: sizer(true, 20.0, context),
                               ),
                             ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Text(
+                              'Enter your email address',
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                color: kBlack,
+                                fontWeight: FontWeight.w500,
+                                height: 1.2,
+                                fontSize: sizer(true, 20.0, context),
+                              ),
+                            ),
                             SizedBox(
-                              height: sizer(false, 35.0, context),
+                              height: sizer(false, 20.0, context),
                             ),
                           ],
                         ),
-                  
                         SizedBox(
                           height: sizer(false, 15.0, context),
                         ),
-
-                        _buildPasswordTextField(),
-
+                        _buildEmailTextField(),
                         SizedBox(
                           height: sizer(false, 15.0, context),
                         ),
-
-                        _buildConfirmPasswordTextField(),
-
                         SizedBox(
                           height: sizer(false, 30, context),
                         ),
                         FullButton(
                           height: sizer(true, 50, context),
                           width: MediaQuery.of(context).size.width,
-                          buttonText: 
-                               'Change Password',
+                          buttonText: 'Password Reset',
                           buttonFunction: () {
                             hasConfirmedPassword == false
                                 ? _submit
@@ -241,7 +237,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         const SizedBox(
                           height: 14.5,
                         ),
-
                         const SizedBox(
                           height: 13.0,
                         ),

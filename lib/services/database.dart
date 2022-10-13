@@ -12,7 +12,7 @@ abstract class Database {
   Future<void> updateUserGender(String uid, Gender gender);
   Future<void> updateUserGoals(String uid, Goals goal);
   Future<void> updateUserWeight(
-      String uid, Weight weight, String weightParam, bool isKYCComplete);
+      {required String uid,required Weight weight,required String weightParam, bool? isKYCComplete});
   Future<void> addNewMealPlan(
       Food food, String uid, String foodTypeString, FoodType foodType);
   Future<void> setUserSavedMeal(Food userSavedMeal, String uid);
@@ -49,13 +49,13 @@ class FirestoreDb implements Database {
           path: APIPath.userPath(id: uid),
           data: {'goal': UserUtils.goalToInt(goal)});
   @override
-  Future<void> updateUserWeight(String uid, Weight weight, String weightParam,
-          bool isKYCComplete) async =>
+  Future<void> updateUserWeight({required String uid,required Weight weight,required String weightParam,
+          bool? isKYCComplete}) async =>
       await _firestoreService
           .updateData(path: APIPath.userPath(id: uid), data: {
         'weight': weightParam,
         'weightParam': UserUtils.getWeightString(weight),
-        'isKYCComplete': isKYCComplete,
+        'isKYCComplete': isKYCComplete ?? true,
       });
 
   @override

@@ -1,6 +1,7 @@
 import 'package:dietri/helper/validators.dart';
 import 'package:dietri/services/auth.dart';
 import 'package:dietri/services/database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
 class SignInPageViewModel with EmailAndPasswordValidators, ChangeNotifier {
@@ -22,6 +23,7 @@ class SignInPageViewModel with EmailAndPasswordValidators, ChangeNotifier {
   String confirmPassword;
   bool isLoading;
   bool submitted;
+  bool? isEmailVerifyLinkSent;
   bool obscurePassWord;
   bool obscureConfirmPassWord;
   bool isSignInPage;
@@ -31,6 +33,7 @@ class SignInPageViewModel with EmailAndPasswordValidators, ChangeNotifier {
       String? password,
       String? confirmPassword,
       bool? isLoading,
+      bool? isEmailVerifyLinkSent,
       bool? submitted,
       bool? obscurePassWord,
       bool? obscureConfirmPassWord,
@@ -39,6 +42,8 @@ class SignInPageViewModel with EmailAndPasswordValidators, ChangeNotifier {
     this.password = password ?? this.password;
     this.isLoading = isLoading ?? this.isLoading;
     this.submitted = submitted ?? this.submitted;
+    this.isEmailVerifyLinkSent =
+        isEmailVerifyLinkSent ?? this.isEmailVerifyLinkSent;
     this.obscurePassWord = obscurePassWord ?? this.obscurePassWord;
     this.obscureConfirmPassWord =
         obscureConfirmPassWord ?? this.obscureConfirmPassWord;
@@ -79,11 +84,27 @@ class SignInPageViewModel with EmailAndPasswordValidators, ChangeNotifier {
     updateWith(isLoading: true, submitted: true);
     try {
       if (isSignInPage) {
-        await auth.signInWithEmailandPassword(email.trim(), password.trim());
+        await auth
+            .signInWithEmailandPassword(email.trim(), password.trim())
+            .then((user) {
+              user!.reload();
+          if (!user.emailVerified) {
+            throw FirebaseAuthException(
+                code: 'email_not_verified', message: 'Email not verified');
+          }
+          
+        });
       } else {
         await auth
             .createUserWithEmailandPassword(email.trim(), password.trim())
-            .then((value) => db.createUserinDatabase(value!));
+            .then((user) async {
+              if (user != null) {   
+            await user.sendEmailVerification();
+             await user.reload();
+              db.createUserinDatabase(user);
+              }
+             
+        });
       }
       //await auth.signInWithEmailandPassword(email, password);
     } catch (e) {
@@ -95,9 +116,10 @@ class SignInPageViewModel with EmailAndPasswordValidators, ChangeNotifier {
   Future<void> signInWithGoogle() async {
     updateWith(isLoading: true);
     try {
-      await auth.signInWithGoogle().then((user) {
-        if (user!.additionalUserInfo!.isNewUser) {
-          db.createUserinDatabase(user.user!);
+      await auth.signInWithGoogle().then((userCredential) {
+        if (userCredential!.additionalUserInfo!.isNewUser) {
+          
+          db.createUserinDatabase(userCredential.user!);
         }
       });
       //db.createUserinDatabase(user!.user!);
@@ -110,7 +132,7 @@ class SignInPageViewModel with EmailAndPasswordValidators, ChangeNotifier {
 
   String? get emailErrorText {
     bool showErrorText = submitted && !emailValidator.isValid(email);
-    return showErrorText ? invalidPasswordText : null;
+    return showErrorText ? invalidEmailText : null;
   }
 
   String? get passwordErrorText {

@@ -1,7 +1,5 @@
-
-import 'package:dietri/screens/kyc/kyc_widget.dart';
+import 'package:dietri/screens/authentication/auth_screen.dart';
 import 'package:dietri/screens/mainscreens/kycorhomepage.dart';
-import 'package:dietri/view_models/onboarding_view_model.dart';
 import 'package:dietri/screens/onboarding_signin.dart';
 import 'package:dietri/services/auth.dart';
 import 'package:dietri/services/shared_prefereces_service.dart';
@@ -23,12 +21,18 @@ class LandingPage extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {
             final user = snapshot.data;
-
+        
             if (user == null) {
-             return OnboardingOrSignUp.create(context, sP);
+              return OnboardingOrSignUp.create(context, sP);
             }
 
-            return  const KYCOrHomePage();
+            if (user.emailVerified) {
+              
+              return const KYCOrHomePage();
+            }
+          
+          return AuthScreen.create(context);
+         
           }
           return const Scaffold(
             body: Center(

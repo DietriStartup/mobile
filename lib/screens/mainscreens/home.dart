@@ -1,8 +1,5 @@
-import 'package:dietri/components/empty_meal_plan%20card.dart';
-import 'package:dietri/components/food_card.dart';
 import 'package:dietri/components/mealplan_card.dart';
 import 'package:dietri/components/quoteoftheday_card.dart';
-import 'package:dietri/components/show_bottom_modal_sheet.dart';
 import 'package:dietri/components/suggested_mealplancard.dart';
 import 'package:dietri/components/swiper_view_item_builder.dart';
 import 'package:dietri/constants/colors.dart';
@@ -29,7 +26,7 @@ class Home extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -119,7 +116,7 @@ class Home extends StatelessWidget {
                         fontWeight: FontWeight.bold),
                   ),
                 ),
-        
+
                 Center(
                   child: SizedBox(
                     height: sizer(false, 250, context),
@@ -136,7 +133,8 @@ class Home extends StatelessWidget {
                                 },
                                 color: kWhiteColor,
                                 color1: kPrimaryColor,
-                                foodType: UserUtils.intToFoodType(food.foodType)!,
+                                foodType:
+                                    UserUtils.intToFoodType(food.foodType)!,
                                 foodIngredients: food.foodIngredients,
                                 foodName: food.foodName),
                             isReverse: false,
@@ -175,15 +173,16 @@ class Home extends StatelessWidget {
                       builder: (context, snapshot) {
                         return SwiperViewItemsBuilder<Food>(
                             snapshot: snapshot,
-                            itemBuilder: (context, food) => SuggestedMealPlanCard(
-                                foodIngredients: food.foodIngredients,
-                                color: kPrimaryAccentColor,
-                                color1: kPrimaryColor,
-                                onPressed: () {
-                                  UserUtils.dietriModalBSheet(
-                                      context, food, height);
-                                },
-                                foodName: food.foodName),
+                            itemBuilder: (context, food) =>
+                                SuggestedMealPlanCard(
+                                    foodIngredients: food.foodIngredients,
+                                    color: kPrimaryAccentColor,
+                                    color1: kPrimaryColor,
+                                    onPressed: () {
+                                      UserUtils.dietriModalBSheet(
+                                          context, food, height);
+                                    },
+                                    foodName: food.foodName),
                             isReverse: false,
                             autoPlay: true,
                             pagination: const SwiperPagination(
@@ -197,7 +196,7 @@ class Home extends StatelessWidget {
                     ),
                   ),
                 ),
-        
+
                 //ReuseableFoodCard(),
               ],
             ),

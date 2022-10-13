@@ -2,7 +2,6 @@ import 'package:dietri/models/user.dart';
 import 'package:dietri/screens/mainscreens/home.dart';
 import 'package:dietri/screens/mainscreens/cupertino_tab_scaffold.dart';
 import 'package:dietri/screens/mainscreens/explore.dart';
-import 'package:dietri/screens/mainscreens/settings/settings_page.dart';
 
 import 'package:dietri/screens/mainscreens/profile.dart';
 import 'package:dietri/screens/saved_meals.dart';
@@ -34,7 +33,7 @@ class _HomePageState extends State<HomePage> {
   final Map<TabItem, GlobalKey<NavigatorState>> navigatorKeys = {
     TabItem.home: GlobalKey<NavigatorState>(),
     TabItem.explore: GlobalKey<NavigatorState>(),
-    TabItem.settings: GlobalKey<NavigatorState>(),
+    // TabItem.settings: GlobalKey<NavigatorState>(),
     TabItem.profile: GlobalKey<NavigatorState>(),
   };
 
@@ -45,8 +44,8 @@ class _HomePageState extends State<HomePage> {
           ),
       TabItem.explore: (_) => ExplorePage.create(context),
       TabItem.savedmeals: (_) => SavedMealsPage.create(context),
-      TabItem.settings: (context) => const SettingsPage(),
-      TabItem.profile: (_) => ProfilePage(userModel: widget.userModel)
+      //TabItem.settings: (context) => const SettingsPage(),
+      TabItem.profile: (_) => ProfilePage.create(context, widget.userModel)
     };
   }
 

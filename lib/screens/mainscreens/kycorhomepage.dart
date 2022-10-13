@@ -1,3 +1,4 @@
+import 'package:dietri/components/email_notverified_screen.dart';
 import 'package:dietri/components/errorscreen.dart';
 import 'package:dietri/components/loading_screen.dart';
 import 'package:dietri/constants/colors.dart';
@@ -27,6 +28,8 @@ class KYCOrHomePage extends StatelessWidget {
                 userModel: userModel,
               );
             }
+
+          
             return KYCScreens.create(context);
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
