@@ -4,7 +4,7 @@ import 'package:dietri/screens/mainscreens/cupertino_tab_scaffold.dart';
 import 'package:dietri/screens/mainscreens/explore.dart';
 
 import 'package:dietri/screens/mainscreens/profile.dart';
-import 'package:dietri/screens/saved_meals.dart';
+import 'package:dietri/screens/mainscreens/saved_meals.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/tab_item.dart';
